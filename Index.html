@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Dev Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+       
+    </style>
+</head>
+<body>
+    
+    <canvas class="particles"></canvas>
+    
+    <div class="container">
+        <header>
+            <div class="logo">MyPortfolio</div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#skills"><i class="fas fa-code"></i> Skills</a></li>
+                    <li><a href="#projects"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li><a href="#leetcode"><i class="fas fa-laptop-code"></i> LeetCode</a></li>
+                    <li><a href="#terminal"><i class="fas fa-terminal"></i> Terminal</a></li>
+                </ul>
+            </nav>
+            <button class="cta-button">Contact</button>
+        </header>
+
+        <section class="hero">
+            <h1>Arminders' Coding Projects</h1>
+            <span class="typed-text"></span>
+            <div class="hero-buttons">
+                <button class="cta-button">View Projects</button>
+                <button class="secondary-button">Download CV</button>
+            </div>
+        </section>
+
+        <section id="skills" class="skills-section">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-container">
+                <div class="globe-container">
+                    <div id="globe"></div>
+                    <div class="controls">
+                        <div class="control-btn" id="rotate-toggle">
+                            <i class="fas fa-pause"></i>
+                        </div>
+                        <div class="control-btn" id="reset-view">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="info-text">Drag to rotate | Scroll to zoom</div>
+                </div>
+                
+                <div class="skill-levels">
+                    <div class="skill-category expert">
+                        <div class="skill-header">
+                            <div class="skill-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="skill-title">Expert</h3>
+                        </div>
+                        <div class="skill-items">
+                            <div class="skill-item">JavaScript</div>
+                            <div class="skill-item">React</div>
+                            <div class="skill-item">Node.js</div>
+                            
+                            <div class="skill-item">C+</div>
+                            <div class="skill-item">C++</div>
+                            <div class="skill-item">C#</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category proficient">
+                        <div class="skill-header">
+                            <div class="skill-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="skill-title">Proficient</h3>
+                        </div>
+                        <div class="skill-items">
+                            <div class="skill-item">Python</div>
+                            <div class="skill-item">HTML/CSS</div>
+                            <div class="skill-item">Git</div>
+                            <div class="skill-item">Java</div>
+                            <div class="skill-item">javascript</div>
+                            <div class="skill-item">Algorithms</div>
+                            <div class="skill-item">TypeScript</div>
+                            <div class="skill-item">SQL</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category intermediate">
+                        <div class="skill-header">
+                            <div class="skill-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h3 class="skill-title">Intermediate</h3>
+                        </div>
+                        <div class="skill-items">
+                            <div class="skill-item">Docker</div>
+                            <div class="skill-item">AWS</div>
+                            <div class="skill-item">Assembly</div>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category basic">
+                        <div class="skill-header">
+                            <div class="skill-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="skill-title">Basic</h3>
+                        </div>
+                        <div class="skill-items">
+                            <div class="skill-item">TensorFlow</div>
+                            <div class="skill-item">Kubernetes</div>
+                            <div class="skill-item">GraphQL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="projects">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card animate-card" style="animation-delay: 0.1s">
+                    <div class="project-content">
+                        <i class="project-icon fas fa-calculator"></i>
+                        <h3 class="project-title">TFT Calculator</h3>
+                        <p class="project-description">Advanced calculator for Teamfight Tactics that helps players calculate odds for champions, items, and strategies. Optimizes gameplay decisions based on probability algorithms.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Game API</span>
+                            <span class="tech-tag">Probability</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card animate-card" style="animation-delay: 0.2s">
+                    <div class="project-content">
+                        <i class="project-icon fas fa-chalkboard-teacher"></i>
+                        <h3 class="project-title">Tutoring Portal</h3>
+                        <p class="project-description">Complete platform for tutors and students to connect, schedule sessions, track progress, and manage payments with integrated payroll processing.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Stripe API</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card animate-card" style="animation-delay: 0.3s">
+                    <div class="project-content">
+                        <i class="project-icon fas fa-search"></i>
+                        <h3 class="project-title">What's The Context</h3>
+                        <p class="project-description">Multi-tool platform for reverse image search, quote attribution, and content verification using advanced image recognition algorithms.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Image Recognition</span>
+                            <span class="tech-tag">Web Scraping</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card animate-card" style="animation-delay: 0.4s">
+                    <div class="project-content">
+                        <i class="project-icon fas fa-file-invoice-dollar"></i>
+                        <h3 class="project-title">Tax Assistant AI</h3>
+                        <p class="project-description">AI-powered tool that guides users through tax form completion with personalized assistance using natural language processing.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AI/ML</span>
+                            <span class="tech-tag">NLP</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="in-progress" class="in-progress-section">
+            <div class="in-progress-header">
+                <i class="in-progress-icon fas fa-tools"></i>
+                <h2 class="in-progress-title">Projects in Progress</h2>
+            </div>
+            
+            <div class="in-progress-grid">
+                <div class="in-progress-card animate-card" style="animation-delay: 0.1s">
+                    <h3 class="progress-title"><i class="fas fa-code-branch"></i> TaskFlow Pro</h3>
+                    <p class="progress-description">Advanced project management system with AI-powered task prioritization and team collaboration features.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                    <div class="progress-tech">
+                        <span class="progress-tag">React</span>
+                        <span class="progress-tag">Node.js</span>
+                        <span class="progress-tag">MongoDB</span>
+                        <span class="progress-tag">AI Integration</span>
+                    </div>
+                </div>
+                
+                <div class="in-progress-card animate-card" style="animation-delay: 0.2s">
+                    <h3 class="progress-title"><i class="fas fa-robot"></i> CodeMentor AI</h3>
+                    <p class="progress-description">AI-powered coding assistant that provides real-time suggestions, debugging help, and learning resources.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="progress-tech">
+                        <span class="progress-tag">Python</span>
+                        <span class="progress-tag">OpenAI API</span>
+                        <span class="progress-tag">VS Code Extension</span>
+                    </div>
+                </div>
+                
+                <div class="in-progress-card animate-card" style="animation-delay: 0.3s">
+                    <h3 class="progress-title"><i class="fas fa-wallet"></i> CryptoPortfolio Tracker</h3>
+                    <p class="progress-description">Comprehensive cryptocurrency portfolio management with real-time tracking, analytics, and tax reporting.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <div class="progress-tech">
+                        <span class="progress-tag">React Native</span>
+                        <span class="progress-tag">Blockchain API</span>
+                        <span class="progress-tag">Firebase</span>
+                    </div>
+                </div>
+                
+                <div class="in-progress-card animate-card" style="animation-delay: 0.4s">
+                    <h3 class="progress-title"><i class="fas fa-vr-cardboard"></i> AR Interior Designer</h3>
+                    <p class="progress-description">Augmented reality application that lets users visualize furniture in their space before purchasing.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="progress-tech">
+                        <span class="progress-tag">Unity</span>
+                        <span class="progress-tag">ARKit</span>
+                        <span class="progress-tag">3D Modeling</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="leetcode" class="leetcode-section">
+            <div class="leetcode-header">
+                <i class="leetcode-icon fas fa-laptop-code"></i>
+                <h2 class="leetcode-title">LeetCode Achievements</h2>
+            </div>
+            
+            <div class="leetcode-container">
+                <div class="leetcode-stats">
+                    <div class="leetcode-overview">
+                        <div class="leetcode-overview-item">
+                            <div class="leetcode-number" id="total-solved">187</div>
+                            <div class="leetcode-label">Problems Solved</div>
+                        </div>
+                        <div class="leetcode-overview-item">
+                            <div class="leetcode-number" id="acceptance">92%</div>
+                            <div class="leetcode-label">Acceptance</div>
+                        </div>
+                        <div class="leetcode-overview-item">
+                            <div class="leetcode-number" id="ranking">Top 8%</div>
+                            <div class="leetcode-label">Ranking</div>
+                        </div>
+                    </div>
+                    
+                    <div class="leetcode-difficulty">
+                        <div class="difficulty-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Difficulty Distribution</span>
+                        </div>
+                        <div class="difficulty-progress">
+                            <div class="difficulty-fill easy" style="width: 45%; background: var(--leetcode-easy);"></div>
+                        </div>
+                        <div class="difficulty-info">
+                            <span>Easy: 84</span>
+                            <span>45%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="leetcode-difficulty">
+                        <div class="difficulty-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Medium Problems</span>
+                        </div>
+                        <div class="difficulty-progress">
+                            <div class="difficulty-fill medium" style="width: 40%; background: var(--leetcode-medium);"></div>
+                        </div>
+                        <div class="difficulty-info">
+                            <span>Medium: 75</span>
+                            <span>40%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="leetcode-difficulty">
+                        <div class="difficulty-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Hard Problems</span>
+                        </div>
+                        <div class="difficulty-progress">
+                            <div class="difficulty-fill hard" style="width: 15%; background: var(--leetcode-hard);"></div>
+                        </div>
+                        <div class="difficulty-info">
+                            <span>Hard: 28</span>
+                            <span>15%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="leetcode-problems">
+                    <h3><i class="fas fa-trophy"></i> Recent Solutions</h3>
+                    <ul class="problem-list" id="recent-solutions">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="terminal" class="terminal-section">
+            <h2 class="section-title">Interactive Terminal</h2>
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <div class="terminal-button close"></div>
+                        <div class="terminal-button minimize"></div>
+                        <div class="terminal-button maximize"></div>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                    
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            </div>
+            
+        </footer>
+    </div>
+
+    <script>
+        
+        function initParticles() {
+            const canvas = document.querySelector('.particles');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            let particles = [];
+            const particleCount = 100;
+            
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.speedY = Math.random() * 1 - 0.5;
+                    this.color = `rgba(74, 123, 255, ${Math.random() * 0.4 + 0.1})`;
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    if (this.x > canvas.width || this.x < 0) {
+                        this.speedX = -this.speedX;
+                    }
+                    
+                    if (this.y > canvas.height || this.y < 0) {
+                        this.speedY = -this.speedY;
+                    }
+                }
+                
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            function initParticlesArray() {
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(74, 123, 255, ${0.1 * (1 - distance/100)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animateParticles);
+            }
+            
+            initParticlesArray();
+            animateParticles();
+            
+            
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticlesArray();
+            });
+        }
+
+        
+        function initTyped() {
+            const typed = new Typed('.typed-text', {
+                strings: [
+                    'Explore a collection of innovative applications and tools I\'ve developed to solve real-world problems and enhance digital experiences.',
+                    'Each project showcases unique technical challenges and creative solutions.',
+                    'Passionate about creating elegant code and intuitive user experiences.'
+                ],
+                typeSpeed: 40,
+                backSpeed: 20,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|',
+                smartBackspace: true
+            });
+        }
+
+        
+        let scene, camera, renderer, globe, controls;
+        let isRotating = true;
+        const rotationSpeed = 0.002;
+        
+        
+        const languageIcons = {
+            "JavaScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+            "React": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+            "Node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+            "Algorithms": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+            "Python": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+            "HTML/CSS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+            "Git": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+            "REST APIs": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+            "TypeScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+            "SQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+            "Docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+            "AWS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg",
+            "TensorFlow": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+            "Kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+            "GraphQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg",
+            "C++": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+        };
+        
+        function initGlobe() {
+            
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a2a);
+            scene.fog = new THREE.Fog(0x0a0a2a, 15, 30);
+            
+            
+            const container = document.querySelector('.globe-container');
+            camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            camera.position.z = 20;
+            
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            document.getElementById('globe').appendChild(renderer.domElement);
+            
+           
+            const globeGeometry = new THREE.SphereGeometry(8, 64, 64);
+            const globeMaterial = new THREE.MeshPhongMaterial({
+                color: 0x16213e,
+                transparent: true,
+                opacity: 0.4,
+                wireframe: true,
+                wireframeLinewidth: 1
+            });
+            globe = new THREE.Mesh(globeGeometry, globeMaterial);
+            scene.add(globe);
+            
+        
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+           
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 3, 5);
+            scene.add(directionalLight);
+            
+          
+            const skillsData = [
+              
+                { name: "JavaScript", level: "expert", size: 1.5, lat: 20, lon: -30 },
+                { name: "React", level: "expert", size: 1.4, lat: 30, lon: -10 },
+                { name: "Node.js", level: "expert", size: 1.4, lat: 40, lon: 10 },
+                { name: "Algorithms", level: "expert", size: 1.3, lat: 10, lon: 20 },
+                
+              
+                { name: "Python", level: "proficient", size: 1.2, lat: -20, lon: -50 },
+                { name: "HTML/CSS", level: "proficient", size: 1.2, lat: -30, lon: -70 },
+                { name: "Git", level: "proficient", size: 1.1, lat: -10, lon: -90 },
+                { name: "REST APIs", level: "proficient", size: 1.1, lat: 0, lon: -110 },
+                
+            
+                { name: "TypeScript", level: "intermediate", size: 1.0, lat: -40, lon: 40 },
+                { name: "SQL", level: "intermediate", size: 1.0, lat: -50, lon: 60 },
+                { name: "Docker", level: "intermediate", size: 1.0, lat: -60, lon: 80 },
+                { name: "AWS", level: "intermediate", size: 1.0, lat: -70, lon: 100 },
+                
+               
+                { name: "TensorFlow", level: "basic", size: 0.9, lat: 60, lon: -150 },
+                { name: "Kubernetes", level: "basic", size: 0.9, lat: 50, lon: -130 },
+                { name: "GraphQL", level: "basic", size: 0.9, lat: 40, lon: -110 },
+                { name: "C++", level: "basic", size: 0.9, lat: 30, lon: -90 }
+            ];
+            
+           
+            const iconsGroup = new THREE.Group();
+            scene.add(iconsGroup);
+            
+         
+            const textureLoader = new THREE.TextureLoader();
+            
+          
+            const skillLabel = document.createElement('div');
+            skillLabel.className = 'skill-label';
+            document.querySelector('.globe-container').appendChild(skillLabel);
+            
+            
+            skillsData.forEach(skill => {
+             
+                const lat = skill.lat * Math.PI / 180;
+                const lon = skill.lon * Math.PI / 180;
+                
+                const radius = 8.5;
+                const x = radius * Math.cos(lat) * Math.cos(lon);
+                const y = radius * Math.sin(lat);
+                const z = radius * Math.cos(lat) * Math.sin(lon);
+                
+              
+                const texture = textureLoader.load(languageIcons[skill.name]);
+                
+               
+                const material = new THREE.SpriteMaterial({ 
+                    map: texture,
+                    transparent: true
+                });
+                
+               
+                const sprite = new THREE.Sprite(material);
+                sprite.position.set(x, y, z);
+                sprite.scale.set(skill.size, skill.size, 1);
+                sprite.userData = skill;
+                
+               
+                iconsGroup.add(sprite);
+                
+               
+                sprite.userData.position = { x, y, z };
+            });
+            
+        
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.rotateSpeed = 0.5;
+            
+        
+            document.getElementById('globe').addEventListener('mousemove', onMouseMove);
+            
+        
+            document.getElementById('rotate-toggle').addEventListener('click', () => {
+                isRotating = !isRotating;
+                document.getElementById('rotate-toggle').innerHTML = 
+                    isRotating ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            });
+            
+            document.getElementById('reset-view').addEventListener('click', () => {
+                controls.reset();
+            });
+            
+           
+            window.addEventListener('resize', () => {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            });
+            
+       
+            animateGlobe();
+        }
+        
+        function onMouseMove(event) {
+            const mouse = new THREE.Vector2();
+            const rect = document.getElementById('globe').getBoundingClientRect();
+            
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(scene.children);
+            
+            const skillLabel = document.querySelector('.skill-label');
+            
+            if (intersects.length > 0 && intersects[0].object.userData.name) {
+                const skill = intersects[0].object.userData;
+                const position = intersects[0].point;
+                
+                skillLabel.textContent = skill.name;
+                skillLabel.style.opacity = '1';
+                skillLabel.style.left = `${event.clientX + 10}px`;
+                skillLabel.style.top = `${event.clientY + 10}px`;
+            } else {
+                skillLabel.style.opacity = '0';
+            }
+        }
+        
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            
+           
+            if (isRotating) {
+                globe.rotation.y += rotationSpeed;
+            }
+            
+        
+            controls.update();
+            
+            renderer.render(scene, camera);
+        }
+
+       
+        function initLeetCodeIntegration() {
+         
+            setTimeout(() => {
+              
+                let count = 0;
+                const target = 187;
+                const interval = setInterval(() => {
+                    count += Math.ceil(target / 100);
+                    if (count >= target) {
+                        count = target;
+                        clearInterval(interval);
+                    }
+                    document.getElementById('total-solved').textContent = count;
+                }, 20);
+                
+                
+                const solutions = [
+                    { title: "Longest Palindromic Substring", difficulty: "medium", date: "2 days ago" },
+                    { title: "Median of Two Sorted Arrays", difficulty: "hard", date: "5 days ago" },
+                    { title: "Valid Parentheses", difficulty: "easy", date: "1 week ago" },
+                    { title: "Add Two Numbers", difficulty: "medium", date: "1 week ago" },
+                    { title: "Regular Expression Matching", difficulty: "hard", date: "2 weeks ago" }
+                ];
+                
+                const solutionsList = document.getElementById('recent-solutions');
+                solutionsList.innerHTML = '';
+                
+                solutions.forEach(solution => {
+                    const li = document.createElement('li');
+                    li.className = 'problem-item';
+                    li.innerHTML = `
+                        <div class="problem-title">
+                            <span class="problem-difficulty ${solution.difficulty}">${solution.difficulty.charAt(0).toUpperCase() + solution.difficulty.slice(1)}</span>
+                            <span>${solution.title}</span>
+                        </div>
+                        <div class="problem-date">${solution.date}</div>
+                    `;
+                    solutionsList.appendChild(li);
+                });
+            }, 1500);
+        }
+
+    
+        function initTerminal() {
+            const terminalBody = document.getElementById('terminal-body');
+          
+            terminalBody.innerHTML = `
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command">welcome</span>
+                </div>
+                <div class="terminal-output">Welcome to the interactive terminal! Type 'help' to see available commands.</div>
+            `;
+            
+          
+            const commands = {
+                help: {
+                    execute: () => 'Available commands: help, about, skills, projects, contact, clear'
+                },
+                about: {
+                    execute: () => 'I am a passionate developer with expertise in JavaScript, Python, and modern web technologies. I enjoy solving complex problems and building innovative solutions.'
+                },
+                skills: {
+                    execute: () => 'JavaScript (5 years), Python (4 years), React (4 years), Node.js (3 years), C++ (3 years), Algorithms (5 years), Databases (3 years), Cloud (2 years)'
+                },
+                projects: {
+                    execute: () => 'Featured projects: TFT Calculator, Tutoring Portal, What\'s The Context, Tax Assistant AI, TaskFlow Pro, CodeMentor AI'
+                },
+                contact: {
+                    execute: () => 'Email: contact@devportfolio.com\nGitHub: github.com/devportfolio\nLinkedIn: linkedin.com/in/devportfolio'
+                },
+                clear: {
+                    execute: () => {
+                        terminalBody.innerHTML = '';
+                        return '';
+                    }
+                }
+            };
+            
+         
+            function processCommand(command) {
+                command = command.trim().toLowerCase();
+                
+                if (command === '') {
+                    return '';
+                }
+                
+                if (commands[command]) {
+                    return commands[command].execute();
+                }
+                
+                return `Command not found: ${command}. Type 'help' for available commands.`;
+            }
+            
+           
+            function createInputLine() {
+                const inputLine = document.createElement('div');
+                inputLine.className = 'terminal-line';
+                inputLine.innerHTML = `
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command" contenteditable="true"></span>
+                `;
+                
+                terminalBody.appendChild(inputLine);
+                
+                const editableSpan = inputLine.querySelector('.terminal-command');
+                editableSpan.focus();
+              
+                editableSpan.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const command = editableSpan.textContent;
+                        
+                      
+                        editableSpan.contentEditable = false;
+                        
+                      
+                        const output = processCommand(command);
+                        
+                        if (output !== '') {
+                            const outputLine = document.createElement('div');
+                            outputLine.className = 'terminal-output';
+                            outputLine.textContent = output;
+                            terminalBody.appendChild(outputLine);
+                        }
+                        
+                       
+                        createInputLine();
+                        
+                       
+                        terminalBody.scrollTop = terminalBody.scrollHeight;
+                    }
+                });
+            }
+            
+          
+            createInputLine();
+        }
+
+       
+        document.addEventListener('DOMContentLoaded', function() {
+          
+            initParticles();
+            
+        
+            initTyped();
+            
+           
+            initGlobe();
+            
+           
+            initLeetCodeIntegration();
+            
+           
+            initTerminal();
+            
+           
+            const cards = document.querySelectorAll('.animate-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = entry.target.style.animationDelay || '0s';
+                        entry.target.style.animationDelay = delay;
+                        entry.target.style.opacity = 1;
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+            
+            
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.2)';
+                    header.style.background = 'rgba(15, 15, 19, 0.98)';
+                } else {
+                    header.style.boxShadow = 'none';
+                    header.style.background = 'rgba(15, 15, 19, 0.95)';
+                }
+            });
+            
+          
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.5s ease-in-out';
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
