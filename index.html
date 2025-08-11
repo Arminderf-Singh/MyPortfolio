@@ -31,15 +31,46 @@
                     <li><a href="#terminal"><i class="fas fa-terminal"></i> Terminal</a></li>
                 </ul>
             </nav>
-            <button class="cta-button">Contact</button>
+            <button class="cta-button" id="contact-btn">Contact</button>
         </header>
+
+    <div class="contact-popup" id="contactPopup">
+    <div class="contact-form-container">
+        <button class="close-contact" id="closeContact">
+            <i class="fas fa-times"></i>
+        </button>
+        <h2 class="contact-title">Get in Touch</h2>
+        <form class="contact-form" id="contactForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required placeholder="What is this regarding?">
+            </div>
+            <div class="form-group">
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" required placeholder="Enter your message here..."></textarea>
+            </div>
+            <div class="form-message" id="formMessage"></div>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+        </form>
+    </div>
+</div>
 
         <section class="hero">
             <h1>Arminders' Coding Projects</h1>
             <span class="typed-text"></span>
             <div class="hero-buttons">
-                <button class="cta-button">View Projects</button>
-                <button class="secondary-button">Download CV</button>
+                <button class="cta-button" onclick="window.open('https://github.com/Freerezervex?tab=repositories', '_blank')">View Projects</button>
+                <button class="secondary-button" onclick="downloadCV()">Download CV</button>
             </div>
         </section>
 
@@ -72,7 +103,6 @@
                             <div class="skill-item">JavaScript</div>
                             <div class="skill-item">React</div>
                             <div class="skill-item">Node.js</div>
-                            
                             <div class="skill-item">C+</div>
                             <div class="skill-item">C++</div>
                             <div class="skill-item">C#</div>
@@ -109,6 +139,7 @@
                             <div class="skill-item">Docker</div>
                             <div class="skill-item">AWS</div>
                             <div class="skill-item">Assembly</div>
+                            <div class="skill-item">Ruby</div>
                         </div>
                     </div>
                     
@@ -144,7 +175,7 @@
                         </div>
                         <div class="project-links">
                             <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <a href="https://github.com/Freerezervex/TFT-Card-Counting-Public" class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
                 </div>
@@ -178,7 +209,7 @@
                         </div>
                         <div class="project-links">
                             <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <a href="vhttps://github.com/Freerezervex/WHATSTHECONTEXT class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
                 </div>
@@ -367,6 +398,7 @@
     </div>
 
     <script>
+        
         
         function initParticles() {
             const canvas = document.querySelector('.particles');
@@ -872,6 +904,93 @@
                 }, 500);
             });
         });
+
+// Contact Form Functionality
+const contactBtn = document.getElementById('contact-btn');
+const closeContact = document.getElementById('closeContact');
+const contactPopup = document.getElementById('contactPopup');
+const contactForm = document.getElementById('contactForm');
+const formMessage = document.getElementById('formMessage');
+
+// Open contact popup
+contactBtn.addEventListener('click', () => {
+    contactPopup.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+});
+
+// Close contact popup
+closeContact.addEventListener('click', () => {
+    contactPopup.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+// Close popup when clicking outside the form
+contactPopup.addEventListener('click', (e) => {
+    if (e.target === contactPopup) {
+        contactPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Form submission handling
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get form data
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+    
+    // Simple validation
+    if (!name || !email || !subject || !message) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showMessage('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    // Simulate form submission (in a real app, you would send to a server)
+    showMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
+    
+    // Reset form after success
+    setTimeout(() => {
+        contactForm.reset();
+        contactPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }, 2000);
+});
+
+function showMessage(text, type) {
+    formMessage.textContent = text;
+    formMessage.className = `form-message ${type}`;
+    
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        formMessage.style.display = 'none';
+    }, 3000);
+}
+
+function downloadCV() {
+            // Create invisible download link
+            const link = document.createElement('a');
+            link.href = 'YOUR_CV_FILE_URL';  // REPLACE WITH ACTUAL CV URL
+            link.download = 'Your_Name_CV.pdf';  // Customize filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+
+
+
+
+        
     </script>
 </body>
 </html>
