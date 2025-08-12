@@ -14,6 +14,12 @@
     <style>
        
     </style>
+    <script>
+    
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+</script>
 </head>
 <body>
     
@@ -168,13 +174,13 @@
                         <i class="project-icon fas fa-calculator"></i>
                         <h3 class="project-title">TFT Calculator</h3>
                         <p class="project-description">Advanced calculator for Teamfight Tactics that helps players calculate odds for champions, items, and strategies. Optimizes gameplay decisions based on probability algorithms.</p>
-                        <div class="project-tech">
+                        <div class="project-tech"> 
                             <span class="tech-tag">JavaScript</span>
                             <span class="tech-tag">Game API</span>
                             <span class="tech-tag">Probability</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <button class="btn live-demo-btn project-link" data-demo-url="https://freerezervex.github.io/MyPortfolio/"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
                             <a href="https://github.com/Freerezervex/TFT-Card-Counting-Public" class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
@@ -191,7 +197,7 @@
                             <span class="tech-tag">Stripe API</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
                             <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
@@ -208,8 +214,8 @@
                             <span class="tech-tag">Web Scraping</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                            <a href="vhttps://github.com/Freerezervex/WHATSTHECONTEXT class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
+                            <a href="https://github.com/Freerezervex/WHATSTHECONTEXT" class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
                 </div>
@@ -225,7 +231,7 @@
                             <span class="tech-tag">Python</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
                             <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
                         </div>
                     </div>
@@ -385,6 +391,28 @@
                 </div>
             </div>
         </section>
+
+    <div id="demoPopup" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <iframe id="demoIframe" src="" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <!-- Source Code Modal -->
+    <div id="sourcePopup" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <iframe id="sourceIframe" src="" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <!-- Source Code Modal -->
+    <div id="sourcePopup" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <iframe id="sourceIframe" src="" loading="lazy"></iframe>
+        </div>
 
         <footer class="footer">
             <div class="social-links">
@@ -986,7 +1014,60 @@ function downloadCV() {
             document.body.removeChild(link);
         }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const contactBtn = document.getElementById("contact-btn");
+    const contactPopup = document.getElementById("contactPopup");
+    const closeContact = document.getElementById("closeContact");
 
+    // Show popup when Contact is clicked
+    contactBtn.addEventListener("click", () => {
+        contactPopup.classList.add("active");
+    });
+
+    // Hide popup when X is clicked
+    closeContact.addEventListener("click", () => {
+        contactPopup.classList.remove("active");
+    });
+
+    // Optional: close if user clicks outside the form
+    contactPopup.addEventListener("click", (e) => {
+        if (e.target === contactPopup) {
+            contactPopup.classList.remove("active");
+        }
+    });
+});
+
+// Event listeners for demo buttons
+demoButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Set iframe src and open modal
+    });
+});
+
+// Event listeners for source buttons
+sourceButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Set iframe src and open modal
+    });
+});
+
+// Close buttons functionality
+closeButtons.forEach(btn => {
+    btn.addEventListener('click', closeModals);
+});
+
+// Background click to close
+[demoPopup, sourcePopup].forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModals();
+    });
+});
+
+
+    // Scroll to top when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo(0, 0);
+    });
 
 
 
@@ -994,4 +1075,3 @@ function downloadCV() {
     </script>
 </body>
 </html>
-
