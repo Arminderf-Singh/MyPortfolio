@@ -1063,9 +1063,10 @@ closeButtons.forEach(btn => {
 
 
 
-    window.addEventListener('DOMContentLoaded', () => {
-        window.scrollTo(0, 0);
-    });
+    window.addEventListener('load', () => {
+    setTimeout(() => window.scrollTo(0, 0), 100);
+});
+
 
 
 
@@ -1073,6 +1074,7 @@ closeButtons.forEach(btn => {
     </script>
 </body>
 </html>
+
 
 
 
