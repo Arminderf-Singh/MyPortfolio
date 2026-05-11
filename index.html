@@ -3,142 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Dev Portfolio</title>
+    <title>Arminder Singh — Developer Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <style>
-       
-    </style>
-    <script>
-    
-    if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-    }
-</script>
+    <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 </head>
 <body>
-    
     <canvas class="particles"></canvas>
-    
+
     <div class="container">
         <header>
-            <div class="logo">MyPortfolio</div>
+            <div class="logo">AS<span class="logo-dot">.</span></div>
             <nav>
                 <ul>
-                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="#skills"><i class="fas fa-code"></i> Skills</a></li>
-                    <li><a href="#projects"><i class="fas fa-project-diagram"></i> Projects</a></li>
-                    <li><a href="#leetcode"><i class="fas fa-laptop-code"></i> LeetCode</a></li>
-                    <li><a href="#terminal"><i class="fas fa-terminal"></i> Terminal</a></li>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#leetcode">LeetCode</a></li>
+                    <li><a href="#puzzles">Puzzles</a></li>
                 </ul>
             </nav>
             <button class="cta-button" id="contact-btn">Contact</button>
         </header>
 
-    <div class="contact-popup" id="contactPopup">
-    <div class="contact-form-container">
-        <button class="close-contact" id="closeContact">
-            <i class="fas fa-times"></i>
-        </button>
-        <h2 class="contact-title">Get in Touch</h2>
-        <form class="contact-form" id="contactForm">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required placeholder="Enter your name">
+        <!-- Contact Popup -->
+        <div class="contact-popup" id="contactPopup">
+            <div class="contact-form-container">
+                <button class="close-contact" id="closeContact"><i class="fas fa-times"></i></button>
+                <h2 class="contact-title">Get in Touch</h2>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required placeholder="What is this about?">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required placeholder="Your message..."></textarea>
+                    </div>
+                    <div class="form-message" id="formMessage"></div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" required placeholder="What is this regarding?">
-            </div>
-            <div class="form-group">
-                <label for="message">Your Message</label>
-                <textarea id="message" name="message" required placeholder="Enter your message here..."></textarea>
-            </div>
-            <div class="form-message" id="formMessage"></div>
-            <button type="submit" class="submit-btn">
-                <i class="fas fa-paper-plane"></i> Send Message
-            </button>
-        </form>
-    </div>
-</div>
+        </div>
 
-        <section class="hero">
-            <h1>Arminders' Coding Projects</h1>
-            <span class="typed-text"></span>
+        <!-- Hero -->
+        <section class="hero reveal">
+            <div class="hero-label">Available for work</div>
+            <h1>Arminder's<br><em>Coding Projects</em></h1>
+            <p class="typed-wrap"><span class="typed-text"></span></p>
             <div class="hero-buttons">
-                <button class="cta-button" onclick="window.open('https://github.com/Arminderf-Singh?tab=repositories', '_blank')">View Projects</button>
+                <button class="cta-button" onclick="window.open('https://github.com/Arminderf-Singh?tab=repositories','_blank')">View Projects</button>
                 <button class="secondary-button" onclick="downloadCV()">Download CV</button>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="stat-num">187</span><span class="stat-label">LeetCode solved</span></div>
+                <div class="hero-stat"><span class="stat-num">Top 8%</span><span class="stat-label">Global ranking</span></div>
+                <div class="hero-stat"><span class="stat-num">4+</span><span class="stat-label">Live projects</span></div>
             </div>
         </section>
 
-        <section id="skills" class="skills-section">
+        <!-- Skills -->
+        <section id="skills" class="skills-section reveal">
             <h2 class="section-title">Technical Skills</h2>
             <div class="skills-container">
                 <div class="globe-container">
                     <div id="globe"></div>
                     <div class="controls">
-                        <div class="control-btn" id="rotate-toggle">
-                            <i class="fas fa-pause"></i>
-                        </div>
-                        <div class="control-btn" id="reset-view">
-                            <i class="fas fa-sync-alt"></i>
-                        </div>
+                        <div class="control-btn" id="rotate-toggle"><i class="fas fa-pause"></i></div>
+                        <div class="control-btn" id="reset-view"><i class="fas fa-sync-alt"></i></div>
                     </div>
-                    
-                    <div class="info-text">Drag to rotate | Scroll to zoom</div>
+                    <div class="info-text">Drag to rotate · Scroll to zoom</div>
                 </div>
-                
                 <div class="skill-levels">
                     <div class="skill-category expert">
                         <div class="skill-header">
-                            <div class="skill-icon">
-                                <i class="fas fa-star"></i>
-                            </div>
+                            <div class="skill-icon"><i class="fas fa-star"></i></div>
                             <h3 class="skill-title">Expert</h3>
                         </div>
                         <div class="skill-items">
                             <div class="skill-item">JavaScript</div>
                             <div class="skill-item">React</div>
                             <div class="skill-item">Node.js</div>
-                            <div class="skill-item">C+</div>
-                            <div class="skill-item">C++</div>
                             <div class="skill-item">C#</div>
+                            <div class="skill-item">C++</div>
                         </div>
                     </div>
-                    
                     <div class="skill-category proficient">
                         <div class="skill-header">
-                            <div class="skill-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
+                            <div class="skill-icon"><i class="fas fa-check-circle"></i></div>
                             <h3 class="skill-title">Proficient</h3>
                         </div>
                         <div class="skill-items">
                             <div class="skill-item">Python</div>
                             <div class="skill-item">HTML/CSS</div>
-                            <div class="skill-item">Git</div>
-                            <div class="skill-item">Java</div>
-                            <div class="skill-item">javascript</div>
-                            <div class="skill-item">Algorithms</div>
                             <div class="skill-item">TypeScript</div>
                             <div class="skill-item">SQL</div>
+                            <div class="skill-item">Git</div>
+                            <div class="skill-item">Algorithms</div>
                         </div>
                     </div>
-                    
                     <div class="skill-category intermediate">
                         <div class="skill-header">
-                            <div class="skill-icon">
-                                <i class="fas fa-cog"></i>
-                            </div>
+                            <div class="skill-icon"><i class="fas fa-cog"></i></div>
                             <h3 class="skill-title">Intermediate</h3>
                         </div>
                         <div class="skill-items">
@@ -148,13 +126,10 @@
                             <div class="skill-item">Ruby</div>
                         </div>
                     </div>
-                    
                     <div class="skill-category basic">
                         <div class="skill-header">
-                            <div class="skill-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <h3 class="skill-title">Basic</h3>
+                            <div class="skill-icon"><i class="fas fa-book"></i></div>
+                            <h3 class="skill-title">Learning</h3>
                         </div>
                         <div class="skill-items">
                             <div class="skill-item">TensorFlow</div>
@@ -165,28 +140,28 @@
                 </div>
             </div>
         </section>
-        
-        <section id="projects">
+
+        <!-- Projects -->
+        <section id="projects" class="reveal">
             <h2 class="section-title">Featured Projects</h2>
             <div class="projects-grid">
-                <div class="project-card animate-card" style="animation-delay: 0.1s">
+                <div class="project-card animate-card" style="--delay:0.1s">
                     <div class="project-content">
                         <i class="project-icon fas fa-calculator"></i>
                         <h3 class="project-title">TFT Calculator</h3>
-                        <p class="project-description">Advanced calculator for Teamfight Tactics that helps players calculate odds for champions, items, and strategies. Optimizes gameplay decisions based on probability algorithms.</p>
-                        <div class="project-tech"> 
+                        <p class="project-description">Advanced calculator for Teamfight Tactics that helps players calculate odds for champions, items, and strategies using probability algorithms.</p>
+                        <div class="project-tech">
                             <span class="tech-tag">JavaScript</span>
                             <span class="tech-tag">Game API</span>
                             <span class="tech-tag">Probability</span>
                         </div>
                         <div class="project-links">
-                            <button class="btn live-demo-btn project-link" data-demo-url="https://freerezervex.github.io/MyPortfolio/"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
-                            <a href="https://github.com/Freerezervex/TFT-Card-Counting-Public" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <button class="btn project-link" onclick="openDemo('https://freerezervex.github.io/MyPortfolio/')"><i class="fas fa-external-link-alt"></i> Live Demo</button>
+                            <a href="https://github.com/Freerezervex/TFT-Card-Counting-Public" class="project-link" target="_blank"><i class="fab fa-github"></i> Source</a>
                         </div>
                     </div>
                 </div>
-
-                <div class="project-card animate-card" style="animation-delay: 0.2s">
+                <div class="project-card animate-card" style="--delay:0.2s">
                     <div class="project-content">
                         <i class="project-icon fas fa-chalkboard-teacher"></i>
                         <h3 class="project-title">Tutoring Portal</h3>
@@ -197,13 +172,11 @@
                             <span class="tech-tag">Stripe API</span>
                         </div>
                         <div class="project-links">
-                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source</a>
                         </div>
                     </div>
                 </div>
-
-                <div class="project-card animate-card" style="animation-delay: 0.3s">
+                <div class="project-card animate-card" style="--delay:0.3s">
                     <div class="project-content">
                         <i class="project-icon fas fa-search"></i>
                         <h3 class="project-title">What's The Context</h3>
@@ -214,13 +187,11 @@
                             <span class="tech-tag">Web Scraping</span>
                         </div>
                         <div class="project-links">
-                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
-                            <a href="https://github.com/Freerezervex/WHATSTHECONTEXT" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <a href="https://github.com/Freerezervex/WHATSTHECONTEXT" class="project-link" target="_blank"><i class="fab fa-github"></i> Source</a>
                         </div>
                     </div>
                 </div>
-
-                <div class="project-card animate-card" style="animation-delay: 0.4s">
+                <div class="project-card animate-card" style="--delay:0.4s">
                     <div class="project-content">
                         <i class="project-icon fas fa-file-invoice-dollar"></i>
                         <h3 class="project-title">Tax Assistant AI</h3>
@@ -231,851 +202,899 @@
                             <span class="tech-tag">Python</span>
                         </div>
                         <div class="project-links">
-                            <button class="btn live-demo-btn project-link" data-demo-url="YOUR_DEMO_URL"> <i class="fas fa-external-link-alt"></i> Live Demo </button>
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Source</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="in-progress" class="in-progress-section">
+        <!-- In Progress -->
+        <section id="in-progress" class="in-progress-section reveal">
             <div class="in-progress-header">
                 <i class="in-progress-icon fas fa-tools"></i>
                 <h2 class="in-progress-title">Projects in Progress</h2>
             </div>
-            
             <div class="in-progress-grid">
-                <div class="in-progress-card animate-card" style="animation-delay: 0.1s">
+                <div class="in-progress-card animate-card" style="--delay:0.1s">
                     <h3 class="progress-title"><i class="fas fa-code-branch"></i> TaskFlow Pro</h3>
                     <p class="progress-description">Advanced project management system with AI-powered task prioritization and team collaboration features.</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 65%"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress-fill" data-width="65%"></div></div>
                     <div class="progress-tech">
-                        <span class="progress-tag">React</span>
-                        <span class="progress-tag">Node.js</span>
-                        <span class="progress-tag">MongoDB</span>
-                        <span class="progress-tag">AI Integration</span>
+                        <span class="progress-tag">React</span><span class="progress-tag">Node.js</span>
+                        <span class="progress-tag">MongoDB</span><span class="progress-tag">AI</span>
                     </div>
                 </div>
-                
-                <div class="in-progress-card animate-card" style="animation-delay: 0.2s">
+                <div class="in-progress-card animate-card" style="--delay:0.2s">
                     <h3 class="progress-title"><i class="fas fa-robot"></i> CodeMentor AI</h3>
-                    <p class="progress-description">AI-powered coding assistant that provides real-time suggestions, debugging help, and learning resources.</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 45%"></div>
-                    </div>
+                    <p class="progress-description">AI-powered coding assistant providing real-time suggestions, debugging help, and learning resources.</p>
+                    <div class="progress-bar"><div class="progress-fill" data-width="45%"></div></div>
                     <div class="progress-tech">
-                        <span class="progress-tag">Python</span>
-                        <span class="progress-tag">OpenAI API</span>
+                        <span class="progress-tag">Python</span><span class="progress-tag">OpenAI API</span>
                         <span class="progress-tag">VS Code Extension</span>
                     </div>
                 </div>
-                
-                <div class="in-progress-card animate-card" style="animation-delay: 0.3s">
-                    <h3 class="progress-title"><i class="fas fa-wallet"></i> CryptoPortfolio Tracker</h3>
+                <div class="in-progress-card animate-card" style="--delay:0.3s">
+                    <h3 class="progress-title"><i class="fas fa-wallet"></i> CryptoPortfolio</h3>
                     <p class="progress-description">Comprehensive cryptocurrency portfolio management with real-time tracking, analytics, and tax reporting.</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 75%"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress-fill" data-width="75%"></div></div>
                     <div class="progress-tech">
-                        <span class="progress-tag">React Native</span>
-                        <span class="progress-tag">Blockchain API</span>
+                        <span class="progress-tag">React Native</span><span class="progress-tag">Blockchain API</span>
                         <span class="progress-tag">Firebase</span>
                     </div>
                 </div>
-                
-                <div class="in-progress-card animate-card" style="animation-delay: 0.4s">
+                <div class="in-progress-card animate-card" style="--delay:0.4s">
                     <h3 class="progress-title"><i class="fas fa-vr-cardboard"></i> AR Interior Designer</h3>
                     <p class="progress-description">Augmented reality application that lets users visualize furniture in their space before purchasing.</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 30%"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress-fill" data-width="30%"></div></div>
                     <div class="progress-tech">
-                        <span class="progress-tag">Unity</span>
-                        <span class="progress-tag">ARKit</span>
+                        <span class="progress-tag">Unity</span><span class="progress-tag">ARKit</span>
                         <span class="progress-tag">3D Modeling</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="leetcode" class="leetcode-section">
+        <!-- LeetCode -->
+        <section id="leetcode" class="leetcode-section reveal">
             <div class="leetcode-header">
                 <i class="leetcode-icon fas fa-laptop-code"></i>
                 <h2 class="leetcode-title">LeetCode Achievements</h2>
             </div>
-            
             <div class="leetcode-container">
                 <div class="leetcode-stats">
                     <div class="leetcode-overview">
                         <div class="leetcode-overview-item">
-                            <div class="leetcode-number" id="total-solved">187</div>
+                            <div class="leetcode-number" id="total-solved">0</div>
                             <div class="leetcode-label">Problems Solved</div>
                         </div>
                         <div class="leetcode-overview-item">
-                            <div class="leetcode-number" id="acceptance">92%</div>
+                            <div class="leetcode-number">92%</div>
                             <div class="leetcode-label">Acceptance</div>
                         </div>
                         <div class="leetcode-overview-item">
-                            <div class="leetcode-number" id="ranking">Top 8%</div>
+                            <div class="leetcode-number">Top 8%</div>
                             <div class="leetcode-label">Ranking</div>
                         </div>
                     </div>
-                    
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Difficulty Distribution</span>
-                        </div>
-                        <div class="difficulty-progress">
-                            <div class="difficulty-fill easy" style="width: 45%; background: var(--leetcode-easy);"></div>
-                        </div>
-                        <div class="difficulty-info">
-                            <span>Easy: 84</span>
-                            <span>45%</span>
-                        </div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-easy)"></i><span>Easy — 84 problems</span></div>
+                        <div class="difficulty-progress"><div class="difficulty-fill easy" data-width="45%"></div></div>
+                        <div class="difficulty-info"><span>45%</span></div>
                     </div>
-                    
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Medium Problems</span>
-                        </div>
-                        <div class="difficulty-progress">
-                            <div class="difficulty-fill medium" style="width: 40%; background: var(--leetcode-medium);"></div>
-                        </div>
-                        <div class="difficulty-info">
-                            <span>Medium: 75</span>
-                            <span>40%</span>
-                        </div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-medium)"></i><span>Medium — 75 problems</span></div>
+                        <div class="difficulty-progress"><div class="difficulty-fill medium" data-width="40%"></div></div>
+                        <div class="difficulty-info"><span>40%</span></div>
                     </div>
-                    
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Hard Problems</span>
-                        </div>
-                        <div class="difficulty-progress">
-                            <div class="difficulty-fill hard" style="width: 15%; background: var(--leetcode-hard);"></div>
-                        </div>
-                        <div class="difficulty-info">
-                            <span>Hard: 28</span>
-                            <span>15%</span>
-                        </div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-hard)"></i><span>Hard — 28 problems</span></div>
+                        <div class="difficulty-progress"><div class="difficulty-fill hard" data-width="15%"></div></div>
+                        <div class="difficulty-info"><span>15%</span></div>
                     </div>
                 </div>
-                
                 <div class="leetcode-problems">
                     <h3><i class="fas fa-trophy"></i> Recent Solutions</h3>
-                    <ul class="problem-list" id="recent-solutions">
-                        <!-- Will be populated by JavaScript -->
-                    </ul>
+                    <ul class="problem-list" id="recent-solutions"></ul>
                 </div>
             </div>
         </section>
 
-        <section id="terminal" class="terminal-section">
-            <h2 class="section-title">Interactive Terminal</h2>
-            <div class="terminal-container">
-                <div class="terminal-header">
-                    <div class="terminal-buttons">
-                        <div class="terminal-button close"></div>
-                        <div class="terminal-button minimize"></div>
-                        <div class="terminal-button maximize"></div>
+        <!-- Puzzles Section -->
+        <section id="puzzles" class="puzzles-section reveal">
+            <h2 class="section-title">Algorithm Playground</h2>
+            <p class="section-subtitle">Interactive visualizations of classic CS problems</p>
+            <div class="puzzle-tabs">
+                <button class="puzzle-tab active" data-tab="hanoi">
+                    <i class="fas fa-layer-group"></i> Tower of Hanoi
+                </button>
+                <button class="puzzle-tab" data-tab="rubiks">
+                    <i class="fas fa-cube"></i> Rubik's Cube Solver
+                </button>
+            </div>
+
+            <!-- Tower of Hanoi Panel -->
+            <div class="puzzle-panel active" id="panel-hanoi">
+                <div class="hanoi-controls">
+                    <div class="control-group">
+                        <label for="disc-count">Discs: <span id="disc-label">4</span></label>
+                        <input type="range" id="disc-count" min="3" max="8" value="4">
+                    </div>
+                    <div class="control-group">
+                        <label for="hanoi-speed">Speed: <span id="speed-label">Normal</span></label>
+                        <input type="range" id="hanoi-speed" min="1" max="5" value="3">
+                    </div>
+                    <div class="hanoi-action-btns">
+                        <button class="puzzle-btn primary" id="hanoi-solve">
+                            <i class="fas fa-play"></i> Solve
+                        </button>
+                        <button class="puzzle-btn secondary" id="hanoi-reset">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
                     </div>
                 </div>
-                <div class="terminal-body" id="terminal-body">
-                    
+                <div class="hanoi-info">
+                    <span class="hanoi-stat">Moves: <strong id="hanoi-move-count">0</strong></span>
+                    <span class="hanoi-stat">Total: <strong id="hanoi-total-moves">15</strong></span>
+                    <span class="hanoi-stat" id="hanoi-status-text">Ready</span>
                 </div>
+                <canvas id="hanoi-canvas"></canvas>
+            </div>
+
+            <!-- Rubik's Cube Panel -->
+            <div class="puzzle-panel" id="panel-rubiks">
+                <div class="rubiks-controls">
+                    <div class="hanoi-action-btns">
+                        <button class="puzzle-btn primary" id="rubiks-scramble">
+                            <i class="fas fa-random"></i> Scramble
+                        </button>
+                        <button class="puzzle-btn secondary" id="rubiks-solve">
+                            <i class="fas fa-magic"></i> Solve
+                        </button>
+                    </div>
+                    <div class="rubiks-info" id="rubiks-status">Ready — click Scramble</div>
+                    <div class="rubiks-moves" id="rubiks-move-display"></div>
+                </div>
+                <div id="rubiks-canvas-container"></div>
             </div>
         </section>
 
-    <div id="demoPopup" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <iframe id="demoIframe" src="" loading="lazy"></iframe>
-        </div>
-    </div>
-
-    <!-- Source Code Modal -->
-    <div id="sourcePopup" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <iframe id="sourceIframe" src="" loading="lazy"></iframe>
-        </div>
-    </div>
-
-    <!-- Source Code Modal -->
-    <div id="sourcePopup" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <iframe id="sourceIframe" src="" loading="lazy"></iframe>
+        <!-- Demo Modal -->
+        <div id="demoPopup" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeDemo()">&times;</button>
+                <iframe id="demoIframe" src="" loading="lazy"></iframe>
+            </div>
         </div>
 
         <footer class="footer">
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <div class="footer-inner">
+                <div class="footer-brand">AS<span class="logo-dot">.</span></div>
+                <div class="social-links">
+                    <a href="https://github.com/Freerezervex" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                </div>
+                <p class="copyright">&copy; 2025 Arminder Singh. Built with care.</p>
             </div>
-            
         </footer>
     </div>
 
     <script>
-        
-        
-        function initParticles() {
-            const canvas = document.querySelector('.particles');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            let particles = [];
-            const particleCount = 100;
-            
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 3 + 1;
-                    this.speedX = Math.random() * 1 - 0.5;
-                    this.speedY = Math.random() * 1 - 0.5;
-                    this.color = `rgba(74, 123, 255, ${Math.random() * 0.4 + 0.1})`;
-                }
-                
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    
-                    if (this.x > canvas.width || this.x < 0) {
-                        this.speedX = -this.speedX;
-                    }
-                    
-                    if (this.y > canvas.height || this.y < 0) {
-                        this.speedY = -this.speedY;
-                    }
-                }
-                
-                draw() {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            
-            function initParticlesArray() {
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }
-            
-            function animateParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                for (let i = 0; i < particles.length; i++) {
-                    particles[i].update();
-                    particles[i].draw();
-                    
-                    
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < 100) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(74, 123, 255, ${0.1 * (1 - distance/100)})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-                
-                requestAnimationFrame(animateParticles);
-            }
-            
-            initParticlesArray();
-            animateParticles();
-            
-            
-            window.addEventListener('resize', function() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                initParticlesArray();
-            });
-        }
+    /* ============================================================
+       PARTICLES
+    ============================================================ */
+    function initParticles() {
+        const canvas = document.querySelector('.particles');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
 
-        
-        function initTyped() {
-            const typed = new Typed('.typed-text', {
-                strings: [
-                    'Explore a collection of innovative applications and tools I\'ve developed to solve real-world problems and enhance digital experiences.',
-                    'Each project showcases unique technical challenges and creative solutions.',
-                    'Passionate about creating elegant code and intuitive user experiences.'
-                ],
-                typeSpeed: 40,
-                backSpeed: 20,
-                loop: true,
-                showCursor: true,
-                cursorChar: '|',
-                smartBackspace: true
-            });
-        }
+        const particles = Array.from({ length: 80 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.5,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.35 + 0.05
+        }));
 
-        
-        let scene, camera, renderer, globe, controls;
-        let isRotating = true;
-        const rotationSpeed = 0.002;
-        
-        
-        const languageIcons = {
-            "JavaScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
-            "React": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-            "Node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-            "Algorithms": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
-            "Python": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-            "HTML/CSS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
-            "Git": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
-            "REST APIs": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-            "TypeScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-            "SQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
-            "Docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
-            "AWS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg",
-            "TensorFlow": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
-            "Kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
-            "GraphQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg",
-            "C++": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
-        };
-        
-        function initGlobe() {
-            
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0a2a);
-            scene.fog = new THREE.Fog(0x0a0a2a, 15, 30);
-            
-            
-            const container = document.querySelector('.globe-container');
-            camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
-            camera.position.z = 20;
-            
-            
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(container.offsetWidth, container.offsetHeight);
-            document.getElementById('globe').appendChild(renderer.domElement);
-            
-           
-            const globeGeometry = new THREE.SphereGeometry(8, 64, 64);
-            const globeMaterial = new THREE.MeshPhongMaterial({
-                color: 0x16213e,
-                transparent: true,
-                opacity: 0.4,
-                wireframe: true,
-                wireframeLinewidth: 1
+        function tick() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillStyle = `rgba(74,123,255,${p.opacity})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 90) {
+                        ctx.strokeStyle = `rgba(74,123,255,${0.08 * (1 - d / 90)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                    }
+                }
             });
-            globe = new THREE.Mesh(globeGeometry, globeMaterial);
-            scene.add(globe);
-            
-        
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambientLight);
-            
-           
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(5, 3, 5);
-            scene.add(directionalLight);
-            
-          
-            const skillsData = [
-              
-                { name: "JavaScript", level: "expert", size: 1.5, lat: 20, lon: -30 },
-                { name: "React", level: "expert", size: 1.4, lat: 30, lon: -10 },
-                { name: "Node.js", level: "expert", size: 1.4, lat: 40, lon: 10 },
-                { name: "Algorithms", level: "expert", size: 1.3, lat: 10, lon: 20 },
-                
-              
-                { name: "Python", level: "proficient", size: 1.2, lat: -20, lon: -50 },
-                { name: "HTML/CSS", level: "proficient", size: 1.2, lat: -30, lon: -70 },
-                { name: "Git", level: "proficient", size: 1.1, lat: -10, lon: -90 },
-                { name: "REST APIs", level: "proficient", size: 1.1, lat: 0, lon: -110 },
-                
-            
-                { name: "TypeScript", level: "intermediate", size: 1.0, lat: -40, lon: 40 },
-                { name: "SQL", level: "intermediate", size: 1.0, lat: -50, lon: 60 },
-                { name: "Docker", level: "intermediate", size: 1.0, lat: -60, lon: 80 },
-                { name: "AWS", level: "intermediate", size: 1.0, lat: -70, lon: 100 },
-                
-               
-                { name: "TensorFlow", level: "basic", size: 0.9, lat: 60, lon: -150 },
-                { name: "Kubernetes", level: "basic", size: 0.9, lat: 50, lon: -130 },
-                { name: "GraphQL", level: "basic", size: 0.9, lat: 40, lon: -110 },
-                { name: "C++", level: "basic", size: 0.9, lat: 30, lon: -90 }
-            ];
-            
-           
-            const iconsGroup = new THREE.Group();
-            scene.add(iconsGroup);
-            
-         
-            const textureLoader = new THREE.TextureLoader();
-            
-          
-            const skillLabel = document.createElement('div');
-            skillLabel.className = 'skill-label';
-            document.querySelector('.globe-container').appendChild(skillLabel);
-            
-            
-            skillsData.forEach(skill => {
-             
-                const lat = skill.lat * Math.PI / 180;
-                const lon = skill.lon * Math.PI / 180;
-                
-                const radius = 8.5;
-                const x = radius * Math.cos(lat) * Math.cos(lon);
-                const y = radius * Math.sin(lat);
-                const z = radius * Math.cos(lat) * Math.sin(lon);
-                
-              
-                const texture = textureLoader.load(languageIcons[skill.name]);
-                
-               
-                const material = new THREE.SpriteMaterial({ 
-                    map: texture,
-                    transparent: true
-                });
-                
-               
-                const sprite = new THREE.Sprite(material);
-                sprite.position.set(x, y, z);
-                sprite.scale.set(skill.size, skill.size, 1);
-                sprite.userData = skill;
-                
-               
-                iconsGroup.add(sprite);
-                
-               
-                sprite.userData.position = { x, y, z };
-            });
-            
-        
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.rotateSpeed = 0.5;
-            
-        
-            document.getElementById('globe').addEventListener('mousemove', onMouseMove);
-            
-        
-            document.getElementById('rotate-toggle').addEventListener('click', () => {
-                isRotating = !isRotating;
-                document.getElementById('rotate-toggle').innerHTML = 
-                    isRotating ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-            });
-            
-            document.getElementById('reset-view').addEventListener('click', () => {
-                controls.reset();
-            });
-            
-           
-            window.addEventListener('resize', () => {
-                camera.aspect = container.offsetWidth / container.offsetHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.offsetWidth, container.offsetHeight);
-            });
-            
-       
-            animateGlobe();
+            requestAnimationFrame(tick);
         }
-        
-        function onMouseMove(event) {
-            const mouse = new THREE.Vector2();
+        tick();
+    }
+
+    /* ============================================================
+       TYPED.JS
+    ============================================================ */
+    function initTyped() {
+        new Typed('.typed-text', {
+            strings: [
+                'Building innovative applications that solve real-world problems.',
+                'Passionate about algorithms, systems, and elegant code.',
+                'Turning complex problems into intuitive experiences.'
+            ],
+            typeSpeed: 38, backSpeed: 18, loop: true, showCursor: true, cursorChar: '|'
+        });
+    }
+
+    /* ============================================================
+       3D SKILL GLOBE
+    ============================================================ */
+    let globeScene, globeCamera, globeRenderer, globeMesh, globeControls;
+    let isRotating = true;
+
+    const languageIcons = {
+        "JavaScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+        "React": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+        "Node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+        "Python": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+        "HTML/CSS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+        "Git": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+        "TypeScript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+        "SQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+        "Docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+        "AWS": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg",
+        "TensorFlow": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+        "Kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+        "GraphQL": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg",
+        "C++": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+        "Algorithms": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+        "REST APIs": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+    };
+
+    function initGlobe() {
+        globeScene = new THREE.Scene();
+        const container = document.querySelector('.globe-container');
+        globeCamera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        globeCamera.position.z = 20;
+        globeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        globeRenderer.setSize(container.offsetWidth, container.offsetHeight);
+        globeRenderer.setClearColor(0x000000, 0);
+        document.getElementById('globe').appendChild(globeRenderer.domElement);
+
+        const geo = new THREE.SphereGeometry(8, 48, 48);
+        const mat = new THREE.MeshPhongMaterial({ color: 0x16213e, transparent: true, opacity: 0.35, wireframe: true });
+        globeMesh = new THREE.Mesh(geo, mat);
+        globeScene.add(globeMesh);
+        globeScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+        dl.position.set(5, 3, 5);
+        globeScene.add(dl);
+
+        const skillsData = [
+            { name: "JavaScript", size: 1.5, lat: 20, lon: -30 },
+            { name: "React", size: 1.4, lat: 30, lon: -10 },
+            { name: "Node.js", size: 1.4, lat: 40, lon: 10 },
+            { name: "Algorithms", size: 1.3, lat: 10, lon: 20 },
+            { name: "Python", size: 1.2, lat: -20, lon: -50 },
+            { name: "HTML/CSS", size: 1.2, lat: -30, lon: -70 },
+            { name: "Git", size: 1.1, lat: -10, lon: -90 },
+            { name: "REST APIs", size: 1.1, lat: 0, lon: -110 },
+            { name: "TypeScript", size: 1.0, lat: -40, lon: 40 },
+            { name: "SQL", size: 1.0, lat: -50, lon: 60 },
+            { name: "Docker", size: 1.0, lat: -60, lon: 80 },
+            { name: "AWS", size: 1.0, lat: -70, lon: 100 },
+            { name: "TensorFlow", size: 0.9, lat: 60, lon: -150 },
+            { name: "Kubernetes", size: 0.9, lat: 50, lon: -130 },
+            { name: "GraphQL", size: 0.9, lat: 40, lon: -110 },
+            { name: "C++", size: 0.9, lat: 30, lon: -90 }
+        ];
+
+        const iconsGroup = new THREE.Group();
+        globeScene.add(iconsGroup);
+        const loader = new THREE.TextureLoader();
+        const skillLabel = document.createElement('div');
+        skillLabel.className = 'skill-label';
+        container.appendChild(skillLabel);
+
+        skillsData.forEach(skill => {
+            const lat = skill.lat * Math.PI / 180, lon = skill.lon * Math.PI / 180;
+            const r = 8.5;
+            const x = r * Math.cos(lat) * Math.cos(lon);
+            const y = r * Math.sin(lat);
+            const z = r * Math.cos(lat) * Math.sin(lon);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: loader.load(languageIcons[skill.name]), transparent: true }));
+            sprite.position.set(x, y, z);
+            sprite.scale.set(skill.size, skill.size, 1);
+            sprite.userData = skill;
+            iconsGroup.add(sprite);
+        });
+
+        globeControls = new THREE.OrbitControls(globeCamera, globeRenderer.domElement);
+        globeControls.enableDamping = true;
+        globeControls.dampingFactor = 0.05;
+        globeControls.rotateSpeed = 0.5;
+
+        document.getElementById('globe').addEventListener('mousemove', e => {
             const rect = document.getElementById('globe').getBoundingClientRect();
-            
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            
+            const mouse = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
             const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mouse, camera);
-            
-            const intersects = raycaster.intersectObjects(scene.children);
-            
-            const skillLabel = document.querySelector('.skill-label');
-            
-            if (intersects.length > 0 && intersects[0].object.userData.name) {
-                const skill = intersects[0].object.userData;
-                const position = intersects[0].point;
-                
-                skillLabel.textContent = skill.name;
+            raycaster.setFromCamera(mouse, globeCamera);
+            const hits = raycaster.intersectObjects(iconsGroup.children);
+            if (hits.length > 0 && hits[0].object.userData.name) {
+                skillLabel.textContent = hits[0].object.userData.name;
                 skillLabel.style.opacity = '1';
-                skillLabel.style.left = `${event.clientX + 10}px`;
-                skillLabel.style.top = `${event.clientY + 10}px`;
+                skillLabel.style.left = (e.clientX + 12) + 'px';
+                skillLabel.style.top = (e.clientY + 12) + 'px';
             } else {
                 skillLabel.style.opacity = '0';
             }
-        }
-        
-        function animateGlobe() {
-            requestAnimationFrame(animateGlobe);
-            
-           
-            if (isRotating) {
-                globe.rotation.y += rotationSpeed;
-            }
-            
-        
-            controls.update();
-            
-            renderer.render(scene, camera);
-        }
-
-       
-        function initLeetCodeIntegration() {
-         
-            setTimeout(() => {
-              
-                let count = 0;
-                const target = 187;
-                const interval = setInterval(() => {
-                    count += Math.ceil(target / 100);
-                    if (count >= target) {
-                        count = target;
-                        clearInterval(interval);
-                    }
-                    document.getElementById('total-solved').textContent = count;
-                }, 20);
-                
-                
-                const solutions = [
-                    { title: "Longest Palindromic Substring", difficulty: "medium", date: "2 days ago" },
-                    { title: "Median of Two Sorted Arrays", difficulty: "hard", date: "5 days ago" },
-                    { title: "Valid Parentheses", difficulty: "easy", date: "1 week ago" },
-                    { title: "Add Two Numbers", difficulty: "medium", date: "1 week ago" },
-                    { title: "Regular Expression Matching", difficulty: "hard", date: "2 weeks ago" }
-                ];
-                
-                const solutionsList = document.getElementById('recent-solutions');
-                solutionsList.innerHTML = '';
-                
-                solutions.forEach(solution => {
-                    const li = document.createElement('li');
-                    li.className = 'problem-item';
-                    li.innerHTML = `
-                        <div class="problem-title">
-                            <span class="problem-difficulty ${solution.difficulty}">${solution.difficulty.charAt(0).toUpperCase() + solution.difficulty.slice(1)}</span>
-                            <span>${solution.title}</span>
-                        </div>
-                        <div class="problem-date">${solution.date}</div>
-                    `;
-                    solutionsList.appendChild(li);
-                });
-            }, 1500);
-        }
-
-    
-        function initTerminal() {
-            const terminalBody = document.getElementById('terminal-body');
-          
-            terminalBody.innerHTML = `
-                <div class="terminal-line">
-                    <span class="terminal-prompt">$</span>
-                    <span class="terminal-command">welcome</span>
-                </div>
-                <div class="terminal-output">Welcome to the interactive terminal! Type 'help' to see available commands.</div>
-            `;
-            
-          
-            const commands = {
-                help: {
-                    execute: () => 'Available commands: help, about, skills, projects, contact, clear'
-                },
-                about: {
-                    execute: () => 'I am a passionate developer with expertise in JavaScript, Python, and modern web technologies. I enjoy solving complex problems and building innovative solutions.'
-                },
-                skills: {
-                    execute: () => 'JavaScript (5 years), Python (4 years), React (4 years), Node.js (3 years), C++ (3 years), Algorithms (5 years), Databases (3 years), Cloud (2 years)'
-                },
-                projects: {
-                    execute: () => 'Featured projects: TFT Calculator, Tutoring Portal, What\'s The Context, Tax Assistant AI, TaskFlow Pro, CodeMentor AI'
-                },
-                contact: {
-                    execute: () => 'Email: contact@devportfolio.com\nGitHub: github.com/devportfolio\nLinkedIn: linkedin.com/in/devportfolio'
-                },
-                clear: {
-                    execute: () => {
-                        terminalBody.innerHTML = '';
-                        return '';
-                    }
-                }
-            };
-            
-         
-            function processCommand(command) {
-                command = command.trim().toLowerCase();
-                
-                if (command === '') {
-                    return '';
-                }
-                
-                if (commands[command]) {
-                    return commands[command].execute();
-                }
-                
-                return `Command not found: ${command}. Type 'help' for available commands.`;
-            }
-            
-           
-            function createInputLine() {
-                const inputLine = document.createElement('div');
-                inputLine.className = 'terminal-line';
-                inputLine.innerHTML = `
-                    <span class="terminal-prompt">$</span>
-                    <span class="terminal-command" contenteditable="true"></span>
-                `;
-                
-                terminalBody.appendChild(inputLine);
-                
-                const editableSpan = inputLine.querySelector('.terminal-command');
-                editableSpan.focus();
-              
-                editableSpan.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const command = editableSpan.textContent;
-                        
-                      
-                        editableSpan.contentEditable = false;
-                        
-                      
-                        const output = processCommand(command);
-                        
-                        if (output !== '') {
-                            const outputLine = document.createElement('div');
-                            outputLine.className = 'terminal-output';
-                            outputLine.textContent = output;
-                            terminalBody.appendChild(outputLine);
-                        }
-                        
-                       
-                        createInputLine();
-                        
-                       
-                        terminalBody.scrollTop = terminalBody.scrollHeight;
-                    }
-                });
-            }
-            
-          
-            createInputLine();
-        }
-
-       
-        document.addEventListener('DOMContentLoaded', function() {
-          
-            initParticles();
-            
-        
-            initTyped();
-            
-           
-            initGlobe();
-            
-           
-            initLeetCodeIntegration();
-            
-           
-            initTerminal();
-            
-           
-            const cards = document.querySelectorAll('.animate-card');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const delay = entry.target.style.animationDelay || '0s';
-                        entry.target.style.animationDelay = delay;
-                        entry.target.style.opacity = 1;
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-            
-            
-            const header = document.querySelector('header');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.2)';
-                    header.style.background = 'rgba(15, 15, 19, 0.98)';
-                } else {
-                    header.style.boxShadow = 'none';
-                    header.style.background = 'rgba(15, 15, 19, 0.95)';
-                }
-            });
-            
-          
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.transition = 'width 1.5s ease-in-out';
-                    bar.style.width = width;
-                }, 500);
-            });
         });
 
-const contactBtn = document.getElementById('contact-btn');
-const closeContact = document.getElementById('closeContact');
-const contactPopup = document.getElementById('contactPopup');
-const contactForm = document.getElementById('contactForm');
-const formMessage = document.getElementById('formMessage');
+        document.getElementById('rotate-toggle').addEventListener('click', function () {
+            isRotating = !isRotating;
+            this.innerHTML = isRotating ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        });
+        document.getElementById('reset-view').addEventListener('click', () => globeControls.reset());
+        window.addEventListener('resize', () => {
+            globeCamera.aspect = container.offsetWidth / container.offsetHeight;
+            globeCamera.updateProjectionMatrix();
+            globeRenderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
 
-
-contactBtn.addEventListener('click', () => {
-    contactPopup.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-});
-
-
-closeContact.addEventListener('click', () => {
-    contactPopup.classList.remove('active');
-    document.body.style.overflow = 'auto';
-});
-
-
-contactPopup.addEventListener('click', (e) => {
-    if (e.target === contactPopup) {
-        contactPopup.classList.remove('active');
-        document.body.style.overflow = 'auto';
+        (function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            if (isRotating) globeMesh.rotation.y += 0.002;
+            globeControls.update();
+            globeRenderer.render(globeScene, globeCamera);
+        })();
     }
-});
 
-// Form submission handling
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const subject = document.getElementById('subject').value;
-    const message = document.getElementById('message').value;
-    
-    // Simple validation
-    if (!name || !email || !subject || !message) {
-        showMessage('Please fill in all fields', 'error');
-        return;
+    /* ============================================================
+       LEETCODE
+    ============================================================ */
+    function initLeetCode() {
+        let count = 0;
+        const target = 187;
+        const interval = setInterval(() => {
+            count = Math.min(count + Math.ceil(target / 80), target);
+            document.getElementById('total-solved').textContent = count;
+            if (count >= target) clearInterval(interval);
+        }, 20);
+
+        const solutions = [
+            { title: "Longest Palindromic Substring", difficulty: "medium", date: "2 days ago" },
+            { title: "Median of Two Sorted Arrays", difficulty: "hard", date: "5 days ago" },
+            { title: "Valid Parentheses", difficulty: "easy", date: "1 week ago" },
+            { title: "Add Two Numbers", difficulty: "medium", date: "1 week ago" },
+            { title: "Regular Expression Matching", difficulty: "hard", date: "2 weeks ago" }
+        ];
+
+        const list = document.getElementById('recent-solutions');
+        list.innerHTML = '';
+        solutions.forEach(s => {
+            const li = document.createElement('li');
+            li.className = 'problem-item';
+            li.innerHTML = `
+                <div class="problem-title">
+                    <span class="problem-difficulty ${s.difficulty}">${s.difficulty.charAt(0).toUpperCase() + s.difficulty.slice(1)}</span>
+                    <span>${s.title}</span>
+                </div>
+                <div class="problem-date">${s.date}</div>`;
+            list.appendChild(li);
+        });
     }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showMessage('Please enter a valid email address', 'error');
-        return;
+
+    /* ============================================================
+       PUZZLE TABS
+    ============================================================ */
+    function initPuzzleTabs() {
+        document.querySelectorAll('.puzzle-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.puzzle-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.puzzle-panel').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+                if (this.dataset.tab === 'rubiks' && !rubiksCubeInitialized) {
+                    initRubiksCube();
+                    rubiksCubeInitialized = true;
+                }
+                if (this.dataset.tab === 'hanoi' && !hanoiInitialized) {
+                    initTowerOfHanoi();
+                    hanoiInitialized = true;
+                }
+            });
+        });
     }
-    
-    // Simulate form submission (in a real app, you would send to a server)
-    showMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
-    
-    // Reset form after success
-    setTimeout(() => {
-        contactForm.reset();
-        contactPopup.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }, 2000);
-});
 
-function showMessage(text, type) {
-    formMessage.textContent = text;
-    formMessage.className = `form-message ${type}`;
-    
-   
-    setTimeout(() => {
-        formMessage.style.display = 'none';
-    }, 3000);
-}
+    /* ============================================================
+       TOWER OF HANOI
+    ============================================================ */
+    let hanoiInitialized = false;
+    let hanoiAnimating = false;
+    let hanoiMoveList = [];
+    let hanoiMoveIndex = 0;
+    let hanoiPegs = [[], [], []];
+    let hanoiCanvas, hanoiCtx;
+    let hanoiAnimationTimer = null;
+    let hanoiDiscCount = 4;
+    let hanoiSpeedMs = 380;
 
-function downloadCV() {
-           
-            const link = document.createElement('a');
-            link.href = 'https://drive.google.com/uc?export=download&id=1kb62xain-rcK42ZiYAgj-roMBc_LbKb9';  
-            link.download = 'Arminder_Singh.pdf';  
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+    const SPEED_MAP = { 1: 900, 2: 550, 3: 380, 4: 200, 5: 80 };
+    const SPEED_LABELS = { 1: 'Slow', 2: 'Moderate', 3: 'Normal', 4: 'Fast', 5: 'Lightning' };
+
+    function initTowerOfHanoi() {
+        hanoiCanvas = document.getElementById('hanoi-canvas');
+        hanoiCtx = hanoiCanvas.getContext('2d');
+        resizeHanoiCanvas();
+        window.addEventListener('resize', resizeHanoiCanvas);
+
+        document.getElementById('disc-count').addEventListener('input', function () {
+            hanoiDiscCount = +this.value;
+            document.getElementById('disc-label').textContent = hanoiDiscCount;
+            const total = Math.pow(2, hanoiDiscCount) - 1;
+            document.getElementById('hanoi-total-moves').textContent = total;
+            resetHanoi();
+        });
+
+        document.getElementById('hanoi-speed').addEventListener('input', function () {
+            hanoiSpeedMs = SPEED_MAP[+this.value];
+            document.getElementById('speed-label').textContent = SPEED_LABELS[+this.value];
+        });
+
+        document.getElementById('hanoi-solve').addEventListener('click', solveHanoi);
+        document.getElementById('hanoi-reset').addEventListener('click', resetHanoi);
+
+        const total = Math.pow(2, hanoiDiscCount) - 1;
+        document.getElementById('hanoi-total-moves').textContent = total;
+        resetHanoi();
+        hanoiInitialized = true;
+    }
+
+    function resizeHanoiCanvas() {
+        if (!hanoiCanvas) return;
+        const panel = document.getElementById('panel-hanoi');
+        hanoiCanvas.width = panel.clientWidth || 800;
+        hanoiCanvas.height = Math.min(340, Math.max(240, panel.clientWidth * 0.38));
+        drawHanoi();
+    }
+
+    function resetHanoi() {
+        if (hanoiAnimationTimer) { clearTimeout(hanoiAnimationTimer); hanoiAnimationTimer = null; }
+        hanoiAnimating = false;
+        hanoiMoveList = [];
+        hanoiMoveIndex = 0;
+        hanoiPegs = [[], [], []];
+        for (let i = hanoiDiscCount; i >= 1; i--) hanoiPegs[0].push(i);
+        document.getElementById('hanoi-move-count').textContent = '0';
+        document.getElementById('hanoi-status-text').textContent = 'Ready';
+        document.getElementById('hanoi-solve').innerHTML = '<i class="fas fa-play"></i> Solve';
+        drawHanoi();
+    }
+
+    function generateMoves(n, from, to, via, list) {
+        if (n === 0) return;
+        generateMoves(n - 1, from, via, to, list);
+        list.push([from, to]);
+        generateMoves(n - 1, via, to, from, list);
+    }
+
+    function solveHanoi() {
+        if (hanoiAnimating) return;
+        resetHanoi();
+        generateMoves(hanoiDiscCount, 0, 2, 1, hanoiMoveList);
+        hanoiAnimating = true;
+        document.getElementById('hanoi-solve').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Solving…';
+        document.getElementById('hanoi-status-text').textContent = 'Solving…';
+        executeHanoiMove();
+    }
+
+    function executeHanoiMove() {
+        if (hanoiMoveIndex >= hanoiMoveList.length) {
+            hanoiAnimating = false;
+            document.getElementById('hanoi-solve').innerHTML = '<i class="fas fa-check"></i> Done!';
+            document.getElementById('hanoi-status-text').textContent = 'Solved!';
+            return;
         }
+        const [from, to] = hanoiMoveList[hanoiMoveIndex++];
+        const disc = hanoiPegs[from].pop();
+        hanoiPegs[to].push(disc);
+        document.getElementById('hanoi-move-count').textContent = hanoiMoveIndex;
+        drawHanoi();
+        hanoiAnimationTimer = setTimeout(executeHanoiMove, hanoiSpeedMs);
+    }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const contactBtn = document.getElementById("contact-btn");
-    const contactPopup = document.getElementById("contactPopup");
-    const closeContact = document.getElementById("closeContact");
+    function drawHanoi() {
+        if (!hanoiCanvas || !hanoiCtx) return;
+        const w = hanoiCanvas.width, h = hanoiCanvas.height;
+        const ctx = hanoiCtx;
+        ctx.clearRect(0, 0, w, h);
 
-   
-    contactBtn.addEventListener("click", () => {
-        contactPopup.classList.add("active");
-    });
+        const pegSpacing = w / 4;
+        const pegX = [pegSpacing, pegSpacing * 2, pegSpacing * 3];
+        const baseY = h - 28;
+        const pegH = h - 60;
+        const discH = Math.min(22, (pegH - 20) / (hanoiDiscCount + 1));
+        const maxDiscW = pegSpacing * 0.85;
+        const minDiscW = maxDiscW * 0.25;
 
-   
-    closeContact.addEventListener("click", () => {
-        contactPopup.classList.remove("active");
-    });
+        // Base
+        ctx.fillStyle = 'rgba(74,123,255,0.18)';
+        ctx.beginPath();
+        ctx.roundRect(20, baseY, w - 40, 10, 5);
+        ctx.fill();
 
+        // Labels
+        ['A', 'B', 'C'].forEach((label, i) => {
+            ctx.fillStyle = 'rgba(160,160,176,0.6)';
+            ctx.font = `bold 13px 'JetBrains Mono', monospace`;
+            ctx.textAlign = 'center';
+            ctx.fillText(label, pegX[i], h - 6);
+        });
 
-    contactPopup.addEventListener("click", (e) => {
-        if (e.target === contactPopup) {
-            contactPopup.classList.remove("active");
+        // Pegs
+        pegX.forEach(x => {
+            const grad = ctx.createLinearGradient(x - 3, baseY - pegH, x + 3, baseY);
+            grad.addColorStop(0, 'rgba(100,120,200,0.5)');
+            grad.addColorStop(1, 'rgba(74,123,255,0.8)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(x - 3, baseY - pegH, 6, pegH, 3);
+            ctx.fill();
+        });
+
+        // Discs
+        const DISC_COLORS = [
+            '#e94560', '#ff6b6b', '#ffa94d', '#ffd43b',
+            '#69db7c', '#4dabf7', '#9775fa', '#f783ac'
+        ];
+
+        hanoiPegs.forEach((peg, pi) => {
+            peg.forEach((disc, di) => {
+                const discW = minDiscW + (disc - 1) / (hanoiDiscCount - 1) * (maxDiscW - minDiscW);
+                const x = pegX[pi] - discW / 2;
+                const y = baseY - (di + 1) * discH - di * 2;
+                const color = DISC_COLORS[(disc - 1) % DISC_COLORS.length];
+
+                const grad = ctx.createLinearGradient(x, y, x, y + discH);
+                grad.addColorStop(0, color);
+                grad.addColorStop(1, color + 'bb');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.roundRect(x, y, discW, discH - 2, discH / 2);
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.beginPath();
+                ctx.roundRect(x + 2, y + 2, discW - 4, discH / 2 - 3, discH / 2);
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                ctx.font = `bold ${Math.min(11, discH - 6)}px 'JetBrains Mono', monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(disc, pegX[pi], y + discH / 2 - 1);
+            });
+        });
+    }
+
+    /* ============================================================
+       RUBIK'S CUBE (Three.js)
+    ============================================================ */
+    let rubiksCubeInitialized = false;
+    let rubiksScene, rubiksCamera, rubiksRenderer, rubiksControls;
+    let cubies = [];
+    let rubiksAnimating = false;
+    let scrambleMovesDone = [];
+    const RUBIKS_MOVE_DURATION = 300;
+
+    const FACE_COLORS = {
+        right:  0xE94560,
+        left:   0xFF8C00,
+        top:    0xF0F0F0,
+        bottom: 0xFFD700,
+        front:  0x2ECC71,
+        back:   0x4A7BFF
+    };
+    const INNER_COLOR = 0x111118;
+
+    function makeCubie(x, y, z) {
+        const geo = new THREE.BoxGeometry(0.93, 0.93, 0.93);
+        const mats = [
+            new THREE.MeshLambertMaterial({ color: x === 1  ? FACE_COLORS.right  : INNER_COLOR }),
+            new THREE.MeshLambertMaterial({ color: x === -1 ? FACE_COLORS.left   : INNER_COLOR }),
+            new THREE.MeshLambertMaterial({ color: y === 1  ? FACE_COLORS.top    : INNER_COLOR }),
+            new THREE.MeshLambertMaterial({ color: y === -1 ? FACE_COLORS.bottom : INNER_COLOR }),
+            new THREE.MeshLambertMaterial({ color: z === 1  ? FACE_COLORS.front  : INNER_COLOR }),
+            new THREE.MeshLambertMaterial({ color: z === -1 ? FACE_COLORS.back   : INNER_COLOR }),
+        ];
+        const mesh = new THREE.Mesh(geo, mats);
+        mesh.position.set(x, y, z);
+        return mesh;
+    }
+
+    function initRubiksCube() {
+        const container = document.getElementById('rubiks-canvas-container');
+        const W = container.clientWidth || 480;
+        const H = Math.min(420, W * 0.85);
+
+        rubiksScene = new THREE.Scene();
+        rubiksCamera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+        rubiksCamera.position.set(4, 3.5, 5);
+        rubiksCamera.lookAt(0, 0, 0);
+
+        rubiksRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        rubiksRenderer.setSize(W, H);
+        rubiksRenderer.setClearColor(0x000000, 0);
+        container.appendChild(rubiksRenderer.domElement);
+
+        rubiksScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const dl = new THREE.DirectionalLight(0xffffff, 0.9);
+        dl.position.set(5, 8, 6);
+        rubiksScene.add(dl);
+        const dl2 = new THREE.DirectionalLight(0xffffff, 0.3);
+        dl2.position.set(-5, -3, -4);
+        rubiksScene.add(dl2);
+
+        rubiksControls = new THREE.OrbitControls(rubiksCamera, rubiksRenderer.domElement);
+        rubiksControls.enableDamping = true;
+        rubiksControls.dampingFactor = 0.06;
+        rubiksControls.minDistance = 4;
+        rubiksControls.maxDistance = 14;
+
+        buildCube();
+
+        (function animateRubiks() {
+            requestAnimationFrame(animateRubiks);
+            rubiksControls.update();
+            rubiksRenderer.render(rubiksScene, rubiksCamera);
+        })();
+
+        document.getElementById('rubiks-scramble').addEventListener('click', rubiksScramble);
+        document.getElementById('rubiks-solve').addEventListener('click', rubiksSolve);
+
+        window.addEventListener('resize', () => {
+            const nW = container.clientWidth || 480;
+            const nH = Math.min(420, nW * 0.85);
+            rubiksCamera.aspect = nW / nH;
+            rubiksCamera.updateProjectionMatrix();
+            rubiksRenderer.setSize(nW, nH);
+        });
+    }
+
+    function buildCube() {
+        cubies.forEach(c => rubiksScene.remove(c));
+        cubies = [];
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                for (let z = -1; z <= 1; z++) {
+                    if (x === 0 && y === 0 && z === 0) continue;
+                    const c = makeCubie(x, y, z);
+                    rubiksScene.add(c);
+                    cubies.push(c);
+                }
+            }
         }
+    }
+
+    const MOVES = [
+        { name: "R",  axis: 'x', layer:  1, dir:  1 },
+        { name: "R'", axis: 'x', layer:  1, dir: -1 },
+        { name: "L",  axis: 'x', layer: -1, dir: -1 },
+        { name: "L'", axis: 'x', layer: -1, dir:  1 },
+        { name: "U",  axis: 'y', layer:  1, dir:  1 },
+        { name: "U'", axis: 'y', layer:  1, dir: -1 },
+        { name: "D",  axis: 'y', layer: -1, dir: -1 },
+        { name: "D'", axis: 'y', layer: -1, dir:  1 },
+        { name: "F",  axis: 'z', layer:  1, dir:  1 },
+        { name: "F'", axis: 'z', layer:  1, dir: -1 },
+        { name: "B",  axis: 'z', layer: -1, dir: -1 },
+        { name: "B'", axis: 'z', layer: -1, dir:  1 },
+    ];
+
+    function inverseMove(move) {
+        return move.name.includes("'")
+            ? MOVES.find(m => m.name === move.name.replace("'", ""))
+            : MOVES.find(m => m.name === move.name + "'");
+    }
+
+    function applyMove(move, onDone) {
+        const affected = cubies.filter(c => Math.round(c.position[move.axis]) === move.layer);
+        const pivot = new THREE.Group();
+        rubiksScene.add(pivot);
+        affected.forEach(c => {
+            const wp = new THREE.Vector3();
+            c.getWorldPosition(wp);
+            pivot.add(c);
+            c.position.copy(wp);
+        });
+
+        const targetAngle = (Math.PI / 2) * move.dir;
+        const start = performance.now();
+        function tick(now) {
+            const t = Math.min((now - start) / RUBIKS_MOVE_DURATION, 1);
+            const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            pivot.rotation[move.axis] = targetAngle * eased;
+            if (t < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                pivot.rotation[move.axis] = targetAngle;
+                affected.forEach(c => {
+                    rubiksScene.attach(c);
+                    c.position.x = Math.round(c.position.x);
+                    c.position.y = Math.round(c.position.y);
+                    c.position.z = Math.round(c.position.z);
+                });
+                rubiksScene.remove(pivot);
+                if (onDone) onDone();
+            }
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function executeMoveQueue(queue, onAllDone) {
+        if (queue.length === 0) { onAllDone && onAllDone(); return; }
+        const move = queue.shift();
+        applyMove(move, () => executeMoveQueue(queue, onAllDone));
+    }
+
+    function rubiksScramble() {
+        if (rubiksAnimating) return;
+        rubiksAnimating = true;
+        document.getElementById('rubiks-status').textContent = 'Scrambling…';
+        buildCube();
+        scrambleMovesDone = [];
+
+        const movePool = [MOVES[0], MOVES[2], MOVES[4], MOVES[6], MOVES[8], MOVES[10]];
+        const n = 14;
+        const queue = [];
+        for (let i = 0; i < n; i++) {
+            const move = movePool[Math.floor(Math.random() * movePool.length)];
+            scrambleMovesDone.push(move);
+            queue.push(move);
+        }
+        document.getElementById('rubiks-move-display').textContent =
+            'Moves: ' + scrambleMovesDone.map(m => m.name).join(' ');
+
+        executeMoveQueue(queue, () => {
+            rubiksAnimating = false;
+            document.getElementById('rubiks-status').textContent = 'Scrambled — click Solve!';
+        });
+    }
+
+    function rubiksSolve() {
+        if (rubiksAnimating || scrambleMovesDone.length === 0) return;
+        rubiksAnimating = true;
+        document.getElementById('rubiks-status').textContent = 'Solving…';
+        const solveQueue = scrambleMovesDone.slice().reverse().map(inverseMove);
+        document.getElementById('rubiks-move-display').textContent =
+            'Inverse: ' + solveQueue.map(m => m.name).join(' ');
+
+        executeMoveQueue(solveQueue, () => {
+            rubiksAnimating = false;
+            scrambleMovesDone = [];
+            document.getElementById('rubiks-status').textContent = 'Solved!';
+            document.getElementById('rubiks-move-display').textContent = '';
+        });
+    }
+
+    /* ============================================================
+       CONTACT FORM
+    ============================================================ */
+    function initContact() {
+        const btn = document.getElementById('contact-btn');
+        const popup = document.getElementById('contactPopup');
+        const close = document.getElementById('closeContact');
+        const form = document.getElementById('contactForm');
+        const msg = document.getElementById('formMessage');
+
+        btn.addEventListener('click', () => { popup.classList.add('active'); document.body.style.overflow = 'hidden'; });
+        close.addEventListener('click', () => { popup.classList.remove('active'); document.body.style.overflow = ''; });
+        popup.addEventListener('click', e => { if (e.target === popup) { popup.classList.remove('active'); document.body.style.overflow = ''; } });
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            msg.className = 'form-message success';
+            msg.textContent = "Message sent! I'll get back to you soon.";
+            setTimeout(() => { form.reset(); popup.classList.remove('active'); document.body.style.overflow = ''; msg.className = 'form-message'; }, 2200);
+        });
+    }
+
+    /* ============================================================
+       DEMO MODAL
+    ============================================================ */
+    function openDemo(url) {
+        document.getElementById('demoIframe').src = url;
+        document.getElementById('demoPopup').classList.add('active');
+    }
+    function closeDemo() {
+        document.getElementById('demoPopup').classList.remove('active');
+        document.getElementById('demoIframe').src = '';
+    }
+    document.addEventListener('click', e => {
+        if (e.target === document.getElementById('demoPopup')) closeDemo();
     });
-});
 
+    /* ============================================================
+       SCROLL REVEAL
+    ============================================================ */
+    function initScrollReveal() {
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal, .animate-card').forEach(el => obs.observe(el));
+    }
 
-demoButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-   
+    /* ============================================================
+       PROGRESS BARS (animate on reveal)
+    ============================================================ */
+    function initProgressBars() {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.querySelectorAll('.progress-fill, .difficulty-fill').forEach(bar => {
+                        const w = bar.dataset.width;
+                        bar.style.width = '0';
+                        setTimeout(() => { bar.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)'; bar.style.width = w; }, 120);
+                    });
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.in-progress-section, .leetcode-section').forEach(s => obs.observe(s));
+    }
+
+    /* ============================================================
+       HEADER SCROLL EFFECT
+    ============================================================ */
+    function initHeader() {
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            header.style.boxShadow = window.scrollY > 50 ? '0 4px 24px rgba(0,0,0,0.25)' : 'none';
+            header.style.background = window.scrollY > 50 ? 'rgba(12,12,16,0.99)' : 'rgba(12,12,16,0.92)';
+        }, { passive: true });
+    }
+
+    /* ============================================================
+       CV DOWNLOAD
+    ============================================================ */
+    function downloadCV() {
+        const a = document.createElement('a');
+        a.href = 'https://drive.google.com/uc?export=download&id=1kb62xain-rcK42ZiYAgj-roMBc_LbKb9';
+        a.download = 'Arminder_Singh.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    window.addEventListener('load', () => { window.scrollTo(0, 0); });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initParticles();
+        initTyped();
+        initGlobe();
+        initLeetCode();
+        initContact();
+        initScrollReveal();
+        initProgressBars();
+        initHeader();
+        initPuzzleTabs();
+        initTowerOfHanoi();
+        hanoiInitialized = true;
     });
-});
-
-
-sourceButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        
-    });
-});
-
-closeButtons.forEach(btn => {
-    btn.addEventListener('click', closeModals);
-});
-
-
-[demoPopup, sourcePopup].forEach(modal => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModals();
-    });
-});
-
-
-
-    window.addEventListener('load', () => {
-    setTimeout(() => window.scrollTo(0, 0), 100);
-});
-
-
-
-
-        
     </script>
 </body>
 </html>
-
-
-
-
-
