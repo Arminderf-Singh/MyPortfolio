@@ -13,6 +13,403 @@
     <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 </head>
 <body>
+
+<!-- ============================================================
+     PRELOADER  — ASCII galaxy → name explosion
+============================================================ -->
+<div id="preloader">
+    <canvas id="pl-canvas"></canvas>
+    <div id="pl-skip">click or press any key to skip</div>
+</div>
+
+<style>
+#preloader {
+    position: fixed; inset: 0; z-index: 99999;
+    background: #02030c; cursor: pointer; overflow: hidden;
+}
+#pl-canvas { display: block; width: 100%; height: 100%; }
+#pl-skip {
+    position: absolute; bottom: 22px; right: 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: rgba(130,155,200,0.38);
+    pointer-events: none; user-select: none;
+    letter-spacing: 0.08em;
+    animation: pl-blink 2.5s ease-in-out infinite;
+}
+@keyframes pl-blink {
+    0%,100% { opacity: 1; } 50% { opacity: 0.25; }
+}
+</style>
+
+<script>
+/* ============================================================
+   PRELOADER SCRIPT — runs immediately, no DOMContentLoaded wait
+============================================================ */
+(function () {
+    'use strict';
+
+    const overlay = document.getElementById('preloader');
+    const canvas  = document.getElementById('pl-canvas');
+    const ctx     = canvas.getContext('2d');
+
+    let W, H, cx, cy;
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        cx = W / 2; cy = H / 2;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    /* -------- bitmap pixel font — guaranteed shapes regardless of font loading -------- */
+    const CELL  = Math.max(10, Math.floor(W / 118));  // screen px per font-pixel
+    const PSUB  = Math.max(3,  Math.floor(CELL / 3.2)); // sub-sample step for particle density
+    const PSIZE = Math.max(15, Math.round(CELL * 1.7)); // galaxy glyph font size — larger = more visible stars
+
+    const FONT = {
+        A: ['01110','10001','10001','11111','10001','10001','10001'],
+        R: ['11110','10001','10001','11110','10100','10010','10001'],
+        M: ['10001','11011','10101','10001','10001','10001','10001'],
+        I: ['11111','00100','00100','00100','00100','00100','11111'],
+        N: ['10001','11001','10101','10011','10001','10001','10001'],
+        D: ['11100','10010','10001','10001','10001','10010','11100'],
+        E: ['11111','10000','10000','11110','10000','10000','11111'],
+        S: ['01111','10000','10000','01110','00001','00001','11110'],
+        G: ['01110','10001','10000','10111','10001','10001','01111'],
+        H: ['10001','10001','10001','11111','10001','10001','10001'],
+    };
+    const CHAR_W  = 5 * CELL + CELL;   // 5 pixel-cols + 1 spacing col
+    const CHAR_H  = 7 * CELL;
+    const TEXT_GAP = Math.round(CELL * 3.2);
+
+    const LINE1 = 'ARMINDER', LINE2 = 'SINGH';
+    const LINE1_W = LINE1.length * CHAR_W - CELL;
+    const LINE2_W = LINE2.length * CHAR_W - CELL;
+    const LINE1_Y = Math.round(cy - CHAR_H - TEXT_GAP * 0.5);
+    const LINE2_Y = Math.round(cy           + TEXT_GAP * 0.5);
+    const LINE1_X = Math.round(cx - LINE1_W * 0.5);
+    const LINE2_X = Math.round(cx - LINE2_W * 0.5);
+    const TEXT_TOP = LINE1_Y;
+    const TEXT_BOT = LINE2_Y + CHAR_H;
+
+    function sampleText() {
+        const pts = [];
+        function renderLine(str, ox, oy) {
+            for (let ci = 0; ci < str.length; ci++) {
+                const bm = FONT[str[ci]]; if (!bm) continue;
+                for (let row = 0; row < 7; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        if (bm[row][col] !== '1') continue;
+                        const bx = ox + ci * CHAR_W + col * CELL;
+                        const by = oy + row * CELL;
+                        for (let sy = 0; sy < CELL; sy += PSUB)
+                            for (let sx = 0; sx < CELL; sx += PSUB)
+                                pts.push({ x: bx + sx, y: by + sy });
+                    }
+                }
+            }
+        }
+        renderLine(LINE1, LINE1_X, LINE1_Y);
+        renderLine(LINE2, LINE2_X, LINE2_Y);
+        for (let i = pts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pts[i], pts[j]] = [pts[j], pts[i]];
+        }
+        return pts;
+    }
+
+    const TP = sampleText(); // text pixel positions
+
+    /* -------- galaxy spiral -------- */
+    function spiralPos(frac) {
+        const arm    = Math.floor(Math.random() * 2);
+        const t      = frac * 4.2;
+        const maxR   = Math.min(W * 0.40, H * 0.68);
+        const r      = Math.pow(frac, 0.55) * maxR;
+        const angle  = t * Math.PI + arm * Math.PI + (Math.random() - 0.5) * 0.35;
+        const spread = r * (0.06 + Math.random() * 0.18);
+        return {
+            x: cx + Math.cos(angle) * r        + (Math.random() - 0.5) * spread,
+            y: cy + Math.sin(angle) * r * 0.37 + (Math.random() - 0.5) * spread * 0.37,
+            angle,
+            r
+        };
+    }
+
+    /* -------- particles -------- */
+    const G_CHARS = ['·','•','∘','°','*','+','×','∙','◦','.','·','•','*','°','∘']; // reliable chars all fonts render
+    const T_CHARS = ['█','█','▓','▓'];   // only solid chars — shading via color, not glyph
+
+    const N = TP.length; // particle count = text pixel count
+
+    function randEdge() {
+        const e = Math.floor(Math.random() * 4);
+        if (e === 0) return { x: Math.random() * W, y: -40 };
+        if (e === 1) return { x: Math.random() * W, y: H + 40 };
+        if (e === 2) return { x: -40, y: Math.random() * H };
+        return { x: W + 40, y: Math.random() * H };
+    }
+
+    const particles = [];
+    for (let i = 0; i < N; i++) {
+        const frac = i / N;
+        const gp   = spiralPos(frac);
+        const tp   = TP[i];
+        const s    = randEdge();
+
+        // dist from core → brightness for galaxy
+        const dr = Math.sqrt((gp.x - cx) ** 2 + ((gp.y - cy) / 0.37) ** 2);
+        const br = Math.max(0.15, Math.pow(Math.max(0, 1 - dr / (Math.min(W * 0.40, H * 0.68))), 0.45));
+
+        // y-position within text block → shade (top bright, bottom slightly dimmer)
+        const relY = Math.max(0, Math.min(1, (tp.y - TEXT_TOP) / (TEXT_BOT - TEXT_TOP)));
+        const tCharIdx = Math.min(T_CHARS.length - 1, Math.floor(relY * T_CHARS.length));
+
+        // explosion scatter — follow galaxy arm direction so blast looks directional
+        const exAngle = gp.angle + (Math.random() - 0.5) * 1.5;
+        const exDist  = 0.4 * Math.max(W, H) + Math.random() * 0.9 * Math.max(W, H);
+
+        // stable per-particle blast color: warm white (bright core) → deep amber (dim edge)
+        const blastHue = Math.round(50  - (1 - br) * 32);   // 50° (warm white) → 18° (amber)
+        const blastLum = Math.round(97  - (1 - br) * 62);   // 97% → 35%
+
+        particles.push({
+            /* current */  x: s.x,   y: s.y,
+            /* galaxy  */  gx: gp.x, gy: gp.y,
+            /* text    */  tx: tp.x, ty: tp.y,
+            /* explode */  ex: cx + Math.cos(exAngle) * exDist,
+                           ey: cy + Math.sin(exAngle) * exDist,
+            /* galaxy orbit */ gAngle: gp.angle, gR: gp.r,
+            br,
+            relY,
+            blastHue, blastLum,
+            gChar:  G_CHARS[Math.floor(Math.random() * G_CHARS.length)],
+            tChar:  T_CHARS[tCharIdx],
+            size:   10 + Math.random() * 4,
+            jitter: Math.random(),          // phase stagger
+        });
+    }
+
+    /* -------- background stars -------- */
+    const BG = Array.from({ length: 220 }, () => ({
+        x: Math.random(), y: Math.random(),
+        r: 0.3 + Math.random() * 1.1,
+        a: 0.08 + Math.random() * 0.38,
+        tw: 2 + Math.random() * 4   // twinkle period seconds
+    }));
+
+    function drawBG(alpha, now) {
+        BG.forEach(s => {
+            const twinkle = 0.7 + 0.3 * Math.sin(now / (s.tw * 1000));
+            ctx.beginPath();
+            ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200,220,255,${s.a * alpha * twinkle})`;
+            ctx.fill();
+        });
+    }
+
+    /* -------- core glow -------- */
+    function drawCoreGlow(alpha) {
+        const R = CELL * 10;
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+        g.addColorStop(0,   `rgba(160,190,255,${0.22 * alpha})`);
+        g.addColorStop(0.5, `rgba(100,130,255,${0.07 * alpha})`);
+        g.addColorStop(1,   'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+    }
+
+    /* -------- glow blur overlay (for HOLD phase) -------- */
+    function drawTextGlow(alpha, pulse) {
+        ctx.save();
+        ctx.globalAlpha = 0.10 * alpha * pulse;
+        ctx.filter      = 'blur(18px)';
+        ctx.font        = `bold ${CHAR_H}px "JetBrains Mono",monospace`;
+        ctx.textAlign   = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle   = '#99bbff';
+        ctx.fillText('ARMINDER', cx, LINE1_Y + CHAR_H * 0.5);
+        ctx.fillStyle   = '#cc99ff';
+        ctx.fillText('SINGH',    cx, LINE2_Y + CHAR_H * 0.5);
+        ctx.restore();
+    }
+
+    /* -------- phase machine -------- */
+    const PHASES    = ['FORM','SPIN','EXPLODE','CONVERGE','HOLD','LOGO','FADE'];
+    const DURATIONS = { FORM: 2100, SPIN: 1500, EXPLODE: 520, CONVERGE: 2400, HOLD: 1000, LOGO: 1300, FADE: 500 };
+    let phaseIdx  = 0;
+    let phaseStart = performance.now();
+    let spinDelta  = 0;
+    let raf;
+    let logoX = 0, logoY = 0;  // filled when LOGO phase begins
+
+    const easeOut   = t => 1 - Math.pow(1 - t, 3);
+    const easeInOut = t => t < 0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+    const lerp      = (a, b, t) => a + (b - a) * t;
+    const ph        = () => PHASES[phaseIdx];
+    const phT       = () => Math.min(1, (performance.now() - phaseStart) / DURATIONS[ph()]);
+
+    function frame(now) {
+        raf = requestAnimationFrame(frame);
+        const t = phT();
+        const p = ph();
+
+        if (t >= 1 && phaseIdx < PHASES.length - 1) {
+            phaseIdx++;
+            phaseStart = performance.now();
+            // on LOGO phase start: query logo DOM position & latch all particle positions
+            if (ph() === 'LOGO') {
+                const el = document.querySelector('.logo');
+                if (el) { const r = el.getBoundingClientRect(); logoX = r.left + r.width / 2; logoY = r.top + r.height / 2; }
+                else { logoX = 58; logoY = 38; }
+                particles.forEach(pt => { pt.lgX = pt.x; pt.lgY = pt.y; });
+            }
+        }
+
+        // canvas clear
+        ctx.fillStyle = 'rgba(2,3,12,1)';
+        ctx.fillRect(0, 0, W, H);
+        drawBG(p === 'FADE' ? (1 - t) * 0.75 : 0.75, now);
+
+        if (p === 'SPIN') spinDelta += 0.0032;
+
+        // FADE: animate overlay CSS opacity for a full crossfade with the site
+        if (p === 'FADE') overlay.style.opacity = String(Math.max(0, 1 - easeInOut(t)));
+
+        // EXPLODE overlays
+        if (p === 'EXPLODE') {
+            const flash = Math.max(0, 1 - t * 5);
+            if (flash > 0) { ctx.fillStyle = `rgba(255,230,170,${flash * 0.5})`; ctx.fillRect(0, 0, W, H); }
+            const maxR  = Math.max(W, H) * 0.9;
+            const ringR = lerp(CELL * 3, maxR, easeOut(t));
+            const ringW = maxR * 0.10;
+            const ringA = Math.max(0, 1 - t * 2.2) * 0.75;
+            if (ringA > 0) {
+                const rg = ctx.createRadialGradient(cx, cy, Math.max(0, ringR - ringW), cx, cy, ringR);
+                rg.addColorStop(0, 'rgba(0,0,0,0)');
+                rg.addColorStop(0.5, `rgba(255,210,110,${ringA})`);
+                rg.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+            }
+        }
+
+        // LOGO phase: accent glow blooms at logo position as particles arrive
+        if (p === 'LOGO') {
+            const glowR = lerp(0, CELL * 8, easeOut(t));
+            const gA    = easeOut(t) * 0.6;
+            if (glowR > 0) {
+                const gg = ctx.createRadialGradient(logoX, logoY, 0, logoX, logoY, glowR);
+                gg.addColorStop(0,   `rgba(233,69,96,${gA})`);
+                gg.addColorStop(0.5, `rgba(233,69,96,${gA * 0.25})`);
+                gg.addColorStop(1,   'rgba(0,0,0,0)');
+                ctx.fillStyle = gg;
+                ctx.fillRect(logoX - glowR, logoY - glowR, glowR * 2, glowR * 2);
+            }
+        }
+
+        // set font for explosion sparkle chars
+        ctx.font = `${PSIZE}px "JetBrains Mono",monospace`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+        particles.forEach(p_ => {
+            let x, y, color;
+            let useRect = false, rectScale = 1;
+
+            if (p === 'FORM') {
+                const lt  = Math.max(0, Math.min(1, (t - p_.jitter * 0.35) / (1 - p_.jitter * 0.35)));
+                const e   = easeOut(lt);
+                x = lerp(p_.x, p_.gx, e); y = lerp(p_.y, p_.gy, e);
+                p_.x = x; p_.y = y;
+                const bri = p_.br * e;
+                color = `hsla(${195 + p_.br * 65},90%,${38 + bri * 55}%,${bri})`;
+
+            } else if (p === 'SPIN') {
+                const innerSpeed = 1 + p_.gR / (Math.min(W, H) * 0.18);
+                const a = p_.gAngle + spinDelta * innerSpeed;
+                x = cx + Math.cos(a) * p_.gR;
+                y = cy + Math.sin(a) * p_.gR * 0.37;
+                p_.x = x; p_.y = y;
+                color = `hsla(${185 + p_.br * 75},92%,${42 + p_.br * 53}%,${p_.br})`;
+
+            } else if (p === 'EXPLODE') {
+                if (p_.expX === undefined) { p_.expX = p_.x; p_.expY = p_.y; }
+                const e = Math.pow(t, 0.28);
+                x = lerp(p_.expX, p_.ex, e); y = lerp(p_.expY, p_.ey, e);
+                p_.x = x; p_.y = y;
+                color = `hsla(${p_.blastHue},100%,${p_.blastLum}%,${Math.max(0, 1 - t * 0.9)})`;
+
+            } else if (p === 'CONVERGE') {
+                const delay = p_.jitter * 0.28;
+                const lt    = Math.max(0, (t - delay) / (1 - delay));
+                const e     = easeInOut(Math.min(lt, 1));
+                x = lerp(p_.x, p_.tx, 0.025 + e * 0.08);
+                y = lerp(p_.y, p_.ty, 0.025 + e * 0.08);
+                p_.x = x; p_.y = y;
+                color = `hsla(${lerp(210,265,p_.relY)},85%,${lerp(97,74,p_.relY)}%,${0.15 + easeOut(e) * 0.85})`;
+                useRect = true;
+
+            } else if (p === 'HOLD') {
+                x = lerp(p_.x, p_.tx, 0.18); y = lerp(p_.y, p_.ty, 0.18);
+                p_.x = x; p_.y = y;
+                const pulse = 0.78 + 0.22 * Math.sin(now / 380 + p_.jitter * Math.PI * 4);
+                color = `hsla(${lerp(205,260,p_.relY)},88%,${lerp(98,76,p_.relY)}%,${pulse})`;
+                useRect = true;
+
+            } else if (p === 'LOGO') {
+                // fly from text position to logo, shrink, shift blue→accent red
+                const e = easeInOut(t);
+                x = lerp(p_.lgX, logoX, e); y = lerp(p_.lgY, logoY, e);
+                p_.x = x; p_.y = y;
+                color = `hsla(${lerp(215,355,e)},90%,${lerp(90,62,e)}%,${0.8 + e * 0.2})`;
+                rectScale = Math.max(0.1, 1 - e * 0.9);
+                useRect = true;
+
+            } else { // FADE
+                x = p_.x; y = p_.y;
+                color = `rgba(233,69,96,${Math.max(0, 1 - t * 2) * p_.br})`;
+                useRect = true;
+                if (t >= 1) { cancelAnimationFrame(raf); overlay.remove(); return; }
+            }
+
+            // render
+            if (useRect) {
+                const rs = Math.max(1, Math.round(PSUB * rectScale));
+                const rx = Math.round(x - rs * 0.5), ry = Math.round(y - rs * 0.5);
+                if (p === 'CONVERGE' || p === 'HOLD') {
+                    ctx.fillStyle = 'rgba(0,0,25,0.45)';
+                    ctx.fillRect(rx + 1, ry + 1, rs, rs);
+                }
+                ctx.fillStyle = color;
+                ctx.fillRect(rx, ry, rs, rs);
+            } else if (p === 'EXPLODE') {
+                ctx.fillStyle = color;
+                ctx.fillText(Math.random() > 0.5 ? p_.gChar : p_.tChar, x, y);
+            } else {
+                // FORM / SPIN: glowing star dot — no text chars, clean circles
+                const r = Math.max(0.5, p_.br * 2.6);
+                ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = color; ctx.fill();
+            }
+        });
+
+        if (p === 'HOLD') { const pulse = 0.5 + 0.5 * Math.sin(now / 500); drawTextGlow(1, pulse); }
+        if (p === 'SPIN' || p === 'FORM') drawCoreGlow(p === 'FORM' ? t : 1);
+    }
+
+    raf = requestAnimationFrame(frame);
+
+    // Skip
+    function skip() {
+        cancelAnimationFrame(raf);
+        overlay.style.transition = 'opacity 0.5s';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 520);
+    }
+    document.addEventListener('keydown',   skip, { once: true });
+    document.addEventListener('touchstart',skip, { once: true });
+    overlay.addEventListener('click',      skip, { once: true });
+}());
+</script>
+
     <canvas class="particles"></canvas>
 
     <div class="container">
