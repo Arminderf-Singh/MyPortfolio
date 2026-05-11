@@ -170,17 +170,17 @@
                         </div>
                     </div>
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-easy)"></i><span>Easy — 84 problems</span></div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-easy)"></i><span>Easy: 84 problems</span></div>
                         <div class="difficulty-progress"><div class="difficulty-fill easy" data-width="45%"></div></div>
                         <div class="difficulty-info"><span>45%</span></div>
                     </div>
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-medium)"></i><span>Medium — 75 problems</span></div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-medium)"></i><span>Medium: 75 problems</span></div>
                         <div class="difficulty-progress"><div class="difficulty-fill medium" data-width="40%"></div></div>
                         <div class="difficulty-info"><span>40%</span></div>
                     </div>
                     <div class="leetcode-difficulty">
-                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-hard)"></i><span>Hard — 28 problems</span></div>
+                        <div class="difficulty-title"><i class="fas fa-circle" style="color:var(--leetcode-hard)"></i><span>Hard: 28 problems</span></div>
                         <div class="difficulty-progress"><div class="difficulty-fill hard" data-width="15%"></div></div>
                         <div class="difficulty-info"><span>15%</span></div>
                     </div>
@@ -235,7 +235,7 @@
                         <button class="puzzle-btn primary" id="rubiks-scramble"><i class="fas fa-random"></i> Scramble</button>
                         <button class="puzzle-btn secondary" id="rubiks-solve"><i class="fas fa-magic"></i> Solve</button>
                     </div>
-                    <div class="rubiks-info" id="rubiks-status">Ready — click Scramble</div>
+                    <div class="rubiks-info" id="rubiks-status">Ready : click Scramble</div>
                     <div class="rubiks-moves" id="rubiks-move-display"></div>
                 </div>
                 <div id="rubiks-canvas-container"></div>
@@ -290,7 +290,7 @@
             id: 'aniwrapped',
             icon: 'fas fa-film',
             title: 'AniWrapped',
-            tagline: 'Anime analytics recap — Spotify Wrapped for MAL',
+            tagline: 'Anime analytics recap : Spotify Wrapped for MAL',
             description: `Built a full-stack web application that transforms MyAnimeList (MAL) user data into an interactive yearly analytics recap inspired by Spotify Wrapped. Integrated the MAL API to process and visualize user watch history, genre preferences, ratings, and viewing trends through dynamic charts and responsive UI components. Focused on performant API handling, scalable frontend architecture, and engaging user experience design.\n\nImplemented personalized analytics generation, responsive cross-device layouts, and optimized asynchronous data fetching to improve load performance and user responsiveness.`,
             results: 'Successfully generated personalized analytics recaps for 100+ users during testing while maintaining responsive performance across desktop and mobile devices.',
             tech: ['React', 'TypeScript', 'Node.js', 'REST APIs', 'Tailwind CSS', 'Vite', 'Netlify'],
@@ -518,14 +518,14 @@
     }
 
     /* ============================================================
-       3D SKILL GLOBE  — icons are children of globeMesh so they
+       3D SKILL GLOBE  : icons are children of globeMesh so they
        orbit with it when it rotates.
     ============================================================ */
     let globeScene, globeCamera, globeRenderer, globeMesh, globeControls;
     let isRotating = true;
 
     // Each skill: brand color, short label (≤3 chars), position on sphere.
-    // Canvas textures are generated locally — no external requests, no CORS.
+    // Canvas textures are generated locally : no external requests, no CORS.
     const skillsData = [
         { name: "JavaScript", abbr: "JS",  color: "#f7df1e", textColor: "#000", size: 1.5, lat: 20,  lon: -30  },
         { name: "React",      abbr: "Re",  color: "#61dafb", textColor: "#000", size: 1.4, lat: 30,  lon: -10  },
@@ -545,7 +545,7 @@
         { name: "WebSockets", abbr: "WS",  color: "#2ecc71", textColor: "#fff", size: 0.9, lat: 30,  lon: -90  }
     ];
 
-    // Build a canvas texture for each skill badge — colored circle + abbreviation.
+    // Build a canvas texture for each skill badge : colored circle + abbreviation.
     function makeSkillTexture(skill) {
         const S = 128;
         const canvas = document.createElement('canvas');
@@ -606,7 +606,7 @@
         dl.position.set(5, 3, 5);
         globeScene.add(dl);
 
-        // Skill sprites as children of globeMesh — they orbit with the globe.
+        // Skill sprites as children of globeMesh : they orbit with the globe.
         // Textures are generated locally via canvas, so no CORS / SVG issues.
         const spritesRef = [];
 
@@ -988,7 +988,7 @@
         const pool = [MOVES[0],MOVES[2],MOVES[4],MOVES[6],MOVES[8],MOVES[10]];
         const q = Array.from({ length: 14 }, () => { const m = pool[Math.floor(Math.random()*pool.length)]; scrambleMovesDone.push(m); return m; });
         document.getElementById('rubiks-move-display').textContent = 'Moves: ' + scrambleMovesDone.map(m=>m.name).join(' ');
-        runQueue([...q], () => { rubiksAnimating = false; document.getElementById('rubiks-status').textContent = 'Scrambled — click Solve!'; });
+        runQueue([...q], () => { rubiksAnimating = false; document.getElementById('rubiks-status').textContent = 'Scrambled: click Solve!'; });
     }
 
     function rubiksSolve() {
