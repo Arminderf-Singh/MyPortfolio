@@ -523,24 +523,64 @@
     let globeScene, globeCamera, globeRenderer, globeMesh, globeControls;
     let isRotating = true;
 
+    // Each skill: brand color, short label (≤3 chars), position on sphere.
+    // Canvas textures are generated locally — no external requests, no CORS.
     const skillsData = [
-        { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", size: 1.5, lat: 20,  lon: -30  },
-        { name: "React",      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",          size: 1.4, lat: 30,  lon: -10  },
-        { name: "Node.js",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",        size: 1.4, lat: 40,  lon:  10  },
-        { name: "Python",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",        size: 1.3, lat: 10,  lon:  20  },
-        { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",size: 1.2, lat:-20, lon: -50  },
-        { name: "HTML/CSS",   icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",            size: 1.2, lat:-30, lon: -70  },
-        { name: "Git",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",              size: 1.1, lat:-10, lon: -90  },
-        { name: "SQL",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",          size: 1.0, lat:  0, lon:-110  },
-        { name: "Docker",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",        size: 1.0, lat:-40, lon:  40  },
-        { name: "AWS",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg", size: 1.0, lat:-50, lon: 60 },
-        { name: "TensorFlow", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",size: 0.9, lat: 60, lon:-150  },
-        { name: "C++",        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",  size: 0.9, lat: 50, lon:-130  },
-        { name: "GraphQL",    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg",         size: 0.9, lat: 40, lon:-110  },
-        { name: "Svelte",     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg",        size: 1.1, lat:-60, lon:  80  },
-        { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",size: 1.0, lat:-70, lon: 100  },
-        { name: "Kubernetes", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",   size: 0.9, lat: 30, lon: -90  }
+        { name: "JavaScript", abbr: "JS",  color: "#f7df1e", textColor: "#000", size: 1.5, lat: 20,  lon: -30  },
+        { name: "React",      abbr: "Re",  color: "#61dafb", textColor: "#000", size: 1.4, lat: 30,  lon: -10  },
+        { name: "Node.js",    abbr: "No",  color: "#5fa04e", textColor: "#fff", size: 1.4, lat: 40,  lon:  10  },
+        { name: "Python",     abbr: "Py",  color: "#3776ab", textColor: "#fff", size: 1.3, lat: 10,  lon:  20  },
+        { name: "TypeScript", abbr: "TS",  color: "#3178c6", textColor: "#fff", size: 1.2, lat:-20,  lon: -50  },
+        { name: "HTML/CSS",   abbr: "CSS", color: "#264de4", textColor: "#fff", size: 1.2, lat:-30,  lon: -70  },
+        { name: "Git",        abbr: "Git", color: "#f05032", textColor: "#fff", size: 1.1, lat:-10,  lon: -90  },
+        { name: "SQL",        abbr: "SQL", color: "#00758f", textColor: "#fff", size: 1.0, lat:  0,  lon:-110  },
+        { name: "Docker",     abbr: "Do",  color: "#2496ed", textColor: "#fff", size: 1.0, lat:-40,  lon:  40  },
+        { name: "AWS",        abbr: "AWS", color: "#ff9900", textColor: "#000", size: 1.0, lat:-50,  lon:  60  },
+        { name: "TensorFlow", abbr: "TF",  color: "#ff6f00", textColor: "#fff", size: 0.9, lat: 60,  lon:-150  },
+        { name: "C++",        abbr: "C++", color: "#9c4dcc", textColor: "#fff", size: 0.9, lat: 50,  lon:-130  },
+        { name: "GraphQL",    abbr: "GQL", color: "#e535ab", textColor: "#fff", size: 0.9, lat: 40,  lon:-110  },
+        { name: "Svelte",     abbr: "Sv",  color: "#ff3e00", textColor: "#fff", size: 1.1, lat:-60,  lon:  80  },
+        { name: "PostgreSQL", abbr: "PG",  color: "#336791", textColor: "#fff", size: 1.0, lat:-70,  lon: 100  },
+        { name: "WebSockets", abbr: "WS",  color: "#2ecc71", textColor: "#fff", size: 0.9, lat: 30,  lon: -90  }
     ];
+
+    // Build a canvas texture for each skill badge — colored circle + abbreviation.
+    function makeSkillTexture(skill) {
+        const S = 128;
+        const canvas = document.createElement('canvas');
+        canvas.width = S; canvas.height = S;
+        const ctx = canvas.getContext('2d');
+
+        // Subtle outer glow ring
+        ctx.beginPath();
+        ctx.arc(S/2, S/2, S/2 - 1, 0, Math.PI * 2);
+        ctx.fillStyle = skill.color + '28';
+        ctx.fill();
+
+        // Main filled circle
+        ctx.beginPath();
+        ctx.arc(S/2, S/2, S/2 - 8, 0, Math.PI * 2);
+        ctx.fillStyle = skill.color;
+        ctx.fill();
+
+        // White inner rim
+        ctx.beginPath();
+        ctx.arc(S/2, S/2, S/2 - 8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Abbreviated label
+        const abbr = skill.abbr;
+        const fontSize = abbr.length > 2 ? S * 0.24 : S * 0.30;
+        ctx.font = `bold ${fontSize}px "JetBrains Mono", "Courier New", monospace`;
+        ctx.fillStyle = skill.textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(abbr, S/2, S/2);
+
+        return new THREE.CanvasTexture(canvas);
+    }
 
     function initGlobe() {
         globeScene = new THREE.Scene();
@@ -565,9 +605,8 @@
         dl.position.set(5, 3, 5);
         globeScene.add(dl);
 
-        // Skill icon sprites — added as CHILDREN of globeMesh so they
-        // spin with it automatically on every rotation.y increment.
-        const loader = new THREE.TextureLoader();
+        // Skill sprites as children of globeMesh — they orbit with the globe.
+        // Textures are generated locally via canvas, so no CORS / SVG issues.
         const spritesRef = [];
 
         skillsData.forEach(skill => {
@@ -578,13 +617,13 @@
             const y = r * Math.sin(lat);
             const z = r * Math.cos(lat) * Math.sin(lon);
 
-            const texture = loader.load(skill.icon);
-            texture.crossOrigin = 'anonymous';
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.92 }));
+            const texture = makeSkillTexture(skill);
+            const mat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.95, depthWrite: false });
+            const sprite = new THREE.Sprite(mat);
             sprite.position.set(x, y, z);
-            sprite.scale.set(skill.size * 1.1, skill.size * 1.1, 1);
+            sprite.scale.set(skill.size * 1.3, skill.size * 1.3, 1);
             sprite.userData = skill;
-            globeMesh.add(sprite);   // <-- child of globeMesh, not scene
+            globeMesh.add(sprite);
             spritesRef.push(sprite);
         });
 
