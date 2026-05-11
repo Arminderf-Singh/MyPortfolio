@@ -502,9 +502,17 @@ nav a:hover::after { width: 100%; }
 .project-title {
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     letter-spacing: -0.02em;
     color: var(--text-1);
+}
+
+.project-tagline {
+    font-size: 0.82rem;
+    color: var(--text-3);
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+    line-height: 1.4;
 }
 
 .project-description {
@@ -1097,42 +1105,216 @@ input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 
 /* ============================================================
-   DEMO MODAL
+   PROJECT DETAIL MODAL
 ============================================================ */
-.modal {
-    display: none;
+.project-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.88);
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
     z-index: 8000;
+    display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 16px;
 }
-.modal.active { display: flex; }
-.modal-content {
+.project-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.project-modal-inner {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    width: 92%;
-    max-width: 960px;
-    max-height: 90vh;
-    padding: 20px;
+    border-radius: var(--radius-xl);
+    width: min(1100px, 100%);
+    max-height: 92vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     position: relative;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.35s var(--ease-spring);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
 }
-.modal-close {
+.project-modal.active .project-modal-inner {
+    transform: none;
+}
+
+.modal-close-btn {
     position: absolute;
-    top: 14px; right: 14px;
+    top: 16px; right: 16px;
+    z-index: 10;
+    width: 36px; height: 36px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-2);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+}
+.modal-close-btn:hover { background: var(--accent-dim); color: var(--accent); transform: rotate(90deg); }
+
+.project-modal-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Info panel */
+.project-modal-info {
+    flex: 0 0 400px;
+    padding: clamp(24px, 3vw, 40px);
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pm-icon-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-right: 40px;
+}
+.pm-icon {
+    width: 52px; height: 52px;
+    background: var(--accent-dim);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+.pm-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-1);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+.pm-tagline {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+}
+
+.pm-desc {
+    font-size: 0.875rem;
+    color: var(--text-2);
+    line-height: 1.75;
+}
+.pm-desc-p { margin-top: 12px; }
+
+.pm-results {
+    display: flex;
+    gap: 10px;
+    background: rgba(46,204,113,0.07);
+    border: 1px solid rgba(46,204,113,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    font-size: 0.82rem;
+    color: var(--green);
+    line-height: 1.55;
+}
+.pm-results i { flex-shrink: 0; margin-top: 2px; }
+
+.pm-tech-full {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.pm-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+}
+
+/* Demo / iframe panel */
+.project-modal-demo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: #07070c;
+}
+
+.demo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    gap: 10px;
+}
+.demo-open-new {
     background: none;
     border: none;
-    color: var(--text-1);
-    font-size: 22px;
+    color: var(--text-3);
     cursor: pointer;
-    z-index: 1;
-    line-height: 1;
-    transition: opacity 0.2s;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
 }
-.modal-close:hover { opacity: 0.6; }
-.modal iframe { width: 100%; height: 78vh; border: none; border-radius: var(--radius-sm); }
+.demo-open-new:hover { background: var(--blue-dim); color: var(--blue); }
+
+.demo-frame-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+.demo-frame-wrap iframe {
+    width: 100%; height: 100%;
+    border: none;
+    display: block;
+}
+
+.demo-blocked {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--text-3);
+    text-align: center;
+    padding: 32px;
+    font-size: 0.9rem;
+}
+
+/* button style extras */
+.btn-detail { background: var(--bg-raised); }
+.btn-demo   { background: var(--blue-dim); border-color: rgba(74,123,255,0.25); color: var(--blue); }
+.btn-demo i { color: var(--blue); }
+.tech-tag-more {
+    background: var(--bg-raised);
+    color: var(--text-3);
+    border-color: var(--border);
+}
+
+/* Responsive modal */
+@media (max-width: 860px) {
+    .project-modal-body { flex-direction: column; overflow-y: auto; }
+    .project-modal-info { flex: none; border-right: none; border-bottom: 1px solid var(--border); }
+    .project-modal-demo { min-height: 340px; }
+}
 
 /* ============================================================
    FOOTER
