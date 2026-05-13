@@ -9,16 +9,22 @@
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <!-- Post-processing for preloader bloom -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <link rel="stylesheet" href="styles.css">
     <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 </head>
 <body>
 
 <!-- ============================================================
-     PRELOADER  — ASCII galaxy → name explosion
+     PRELOADER — Three.js WebGL galaxy → name explosion + bloom
 ============================================================ -->
 <div id="preloader">
-    <canvas id="pl-canvas"></canvas>
     <div id="pl-skip">click or press any key to skip</div>
 </div>
 
@@ -27,61 +33,84 @@
     position: fixed; inset: 0; z-index: 99999;
     background: #02030c; cursor: pointer; overflow: hidden;
 }
-#pl-canvas { display: block; width: 100%; height: 100%; }
+#preloader canvas { position: absolute; inset: 0; display: block; width: 100% !important; height: 100% !important; }
 #pl-skip {
-    position: absolute; bottom: 22px; right: 26px;
+    position: absolute; bottom: 22px; right: 26px; z-index: 1;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem; color: rgba(130,155,200,0.38);
     pointer-events: none; user-select: none;
     letter-spacing: 0.08em;
     animation: pl-blink 2.5s ease-in-out infinite;
 }
-@keyframes pl-blink {
-    0%,100% { opacity: 1; } 50% { opacity: 0.25; }
-}
+@keyframes pl-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
 </style>
 
 <script>
 /* ============================================================
-   PRELOADER SCRIPT — runs immediately, no DOMContentLoaded wait
+   PRELOADER — Three.js WebGL with UnrealBloom, additive particles
 ============================================================ */
 (function () {
     'use strict';
 
     const overlay = document.getElementById('preloader');
-    const canvas  = document.getElementById('pl-canvas');
-    const ctx     = canvas.getContext('2d');
+    let W = window.innerWidth, H = window.innerHeight, cx = W / 2, cy = H / 2;
 
-    let W, H, cx, cy;
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-        cx = W / 2; cy = H / 2;
+    /* ---- Three.js scene / ortho camera ---- */
+    const scene  = new THREE.Scene();
+    // Orthographic so world units = screen pixels; no perspective distortion needed
+    const camera = new THREE.OrthographicCamera(-W/2, W/2, H/2, -H/2, -500, 500);
+    camera.position.z = 1;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x02030c, 1);
+    overlay.insertBefore(renderer.domElement, overlay.firstChild);
+
+    /* ---- EffectComposer + UnrealBloom (with graceful fallback) ---- */
+    let composer = null, bloomPass = null, useComposer = false;
+    try {
+        composer  = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 1.4, 0.55, 0.05);
+        composer.addPass(bloomPass);
+        useComposer = true;
+    } catch(e) {
+        console.warn('Preloader: post-processing unavailable, falling back to plain renderer.', e);
     }
-    resize();
-    window.addEventListener('resize', resize);
 
-    /* -------- bitmap pixel font — guaranteed shapes regardless of font loading -------- */
-    const CELL  = Math.max(10, Math.floor(W / 118));  // screen px per font-pixel
-    const PSUB  = Math.max(3,  Math.floor(CELL / 3.2)); // sub-sample step for particle density
-    const PSIZE = Math.max(15, Math.round(CELL * 1.7)); // galaxy glyph font size — larger = more visible stars
+    window.addEventListener('resize', () => {
+        W = window.innerWidth; H = window.innerHeight; cx = W/2; cy = H/2;
+        camera.left = -W/2; camera.right = W/2;
+        camera.top  =  H/2; camera.bottom = -H/2;
+        camera.updateProjectionMatrix();
+        renderer.setSize(W, H);
+        if (useComposer) composer.setSize(W, H);
+    });
+
+    /* ---- Screen ↔ world helpers (ortho: world 0,0 = screen centre) ---- */
+    const sw = x => x - cx;   // screen x → world x
+    const sh = y => cy - y;   // screen y → world y (y flipped)
+
+    /* ---- Bitmap pixel font ---- */
+    const CELL = Math.max(10, Math.floor(W / 118));
+    const PSUB = Math.max(3,  Math.floor(CELL / 3.2));
 
     const FONT = {
-        A: ['01110','10001','10001','11111','10001','10001','10001'],
-        R: ['11110','10001','10001','11110','10100','10010','10001'],
-        M: ['10001','11011','10101','10001','10001','10001','10001'],
-        I: ['11111','00100','00100','00100','00100','00100','11111'],
-        N: ['10001','11001','10101','10011','10001','10001','10001'],
-        D: ['11100','10010','10001','10001','10001','10010','11100'],
-        E: ['11111','10000','10000','11110','10000','10000','11111'],
-        S: ['01111','10000','10000','01110','00001','00001','11110'],
-        G: ['01110','10001','10000','10111','10001','10001','01111'],
-        H: ['10001','10001','10001','11111','10001','10001','10001'],
+        A:['01110','10001','10001','11111','10001','10001','10001'],
+        R:['11110','10001','10001','11110','10100','10010','10001'],
+        M:['10001','11011','10101','10001','10001','10001','10001'],
+        I:['11111','00100','00100','00100','00100','00100','11111'],
+        N:['10001','11001','10101','10011','10001','10001','10001'],
+        D:['11100','10010','10001','10001','10001','10010','11100'],
+        E:['11111','10000','10000','11110','10000','10000','11111'],
+        S:['01111','10000','10000','01110','00001','00001','11110'],
+        G:['01110','10001','10000','10111','10001','10001','01111'],
+        H:['10001','10001','10001','11111','10001','10001','10001'],
     };
-    const CHAR_W  = 5 * CELL + CELL;   // 5 pixel-cols + 1 spacing col
+    const CHAR_W  = 5 * CELL + CELL;
     const CHAR_H  = 7 * CELL;
     const TEXT_GAP = Math.round(CELL * 3.2);
-
     const LINE1 = 'ARMINDER', LINE2 = 'SINGH';
     const LINE1_W = LINE1.length * CHAR_W - CELL;
     const LINE2_W = LINE2.length * CHAR_W - CELL;
@@ -89,15 +118,14 @@
     const LINE2_Y = Math.round(cy           + TEXT_GAP * 0.5);
     const LINE1_X = Math.round(cx - LINE1_W * 0.5);
     const LINE2_X = Math.round(cx - LINE2_W * 0.5);
-    const TEXT_TOP = LINE1_Y;
-    const TEXT_BOT = LINE2_Y + CHAR_H;
+    const TEXT_TOP = LINE1_Y, TEXT_BOT = LINE2_Y + CHAR_H;
 
     function sampleText() {
         const pts = [];
         function renderLine(str, ox, oy) {
             for (let ci = 0; ci < str.length; ci++) {
                 const bm = FONT[str[ci]]; if (!bm) continue;
-                for (let row = 0; row < 7; row++) {
+                for (let row = 0; row < 7; row++)
                     for (let col = 0; col < 5; col++) {
                         if (bm[row][col] !== '1') continue;
                         const bx = ox + ci * CHAR_W + col * CELL;
@@ -106,7 +134,6 @@
                             for (let sx = 0; sx < CELL; sx += PSUB)
                                 pts.push({ x: bx + sx, y: by + sy });
                     }
-                }
             }
         }
         renderLine(LINE1, LINE1_X, LINE1_Y);
@@ -118,29 +145,59 @@
         return pts;
     }
 
-    const TP = sampleText(); // text pixel positions
+    const TP = sampleText();
+    const N  = TP.length;
 
-    /* -------- galaxy spiral -------- */
+    const MW_MAX_R = Math.min(W * 0.42, H * 0.70);
+
     function spiralPos(frac) {
-        const arm    = Math.floor(Math.random() * 2);
-        const t      = frac * 4.2;
-        const maxR   = Math.min(W * 0.40, H * 0.68);
-        const r      = Math.pow(frac, 0.55) * maxR;
-        const angle  = t * Math.PI + arm * Math.PI + (Math.random() - 0.5) * 0.35;
-        const spread = r * (0.06 + Math.random() * 0.18);
-        return {
-            x: cx + Math.cos(angle) * r        + (Math.random() - 0.5) * spread,
-            y: cy + Math.sin(angle) * r * 0.37 + (Math.random() - 0.5) * spread * 0.37,
-            angle,
-            r
-        };
+        const maxR = MW_MAX_R;
+        const NUM_ARMS = 4;
+        const b  = 0.28;          // logarithmic arm pitch
+        const r0 = maxR * 0.04;   // inner reference radius
+
+        // Inter-arm field stars: 15% of particles placed at random angle
+        if (Math.random() < 0.15) {
+            const r     = Math.pow(Math.random(), 1.4) * maxR;
+            const angle = Math.random() * Math.PI * 2;
+            const spr   = r * 0.28;
+            return {
+                x: cx + Math.cos(angle) * r + (Math.random() - 0.5) * spr,
+                y: cy + Math.sin(angle) * r * 0.35 + (Math.random() - 0.5) * spr * 0.35,
+                angle, r
+            };
+        }
+
+        const arm = Math.floor(Math.random() * NUM_ARMS);
+        const r   = Math.pow(Math.random(), 0.55) * maxR;
+
+        // Arm width loosens toward the outer disk
+        const armSpread = 0.07 + (r / maxR) * 0.22;
+        const spr = r * armSpread;
+
+        let x, y, angle;
+
+        if (r < maxR * 0.10) {
+            // Galactic bar: elongated horizontally
+            angle = Math.random() * Math.PI * 2;
+            x = cx + Math.cos(angle) * r + (Math.random() - 0.5) * spr * 2.5;
+            y = cy + Math.sin(angle) * r * 0.35 * 0.4 + (Math.random() - 0.5) * spr * 0.35 * 0.4;
+        } else if (r < maxR * 0.18) {
+            // Central bulge: spherical scatter, no arm preference
+            angle = Math.random() * Math.PI * 2;
+            x = cx + Math.cos(angle) * r + (Math.random() - 0.5) * spr;
+            y = cy + Math.sin(angle) * r * 0.35 + (Math.random() - 0.5) * spr * 0.35;
+        } else {
+            // Logarithmic spiral arm
+            const logAngle  = Math.log(r / r0) / b;
+            const armOffset = (arm * Math.PI * 2) / NUM_ARMS;
+            angle = logAngle + armOffset + (Math.random() - 0.5) * armSpread * 2.2;
+            x = cx + Math.cos(angle) * r + (Math.random() - 0.5) * spr;
+            y = cy + Math.sin(angle) * r * 0.35 + (Math.random() - 0.5) * spr * 0.35;
+        }
+
+        return { x, y, angle, r };
     }
-
-    /* -------- particles -------- */
-    const G_CHARS = ['·','•','∘','°','*','+','×','∙','◦','.','·','•','*','°','∘']; // reliable chars all fonts render
-    const T_CHARS = ['█','█','▓','▓'];   // only solid chars — shading via color, not glyph
-
-    const N = TP.length; // particle count = text pixel count
 
     function randEdge() {
         const e = Math.floor(Math.random() * 4);
@@ -150,263 +207,310 @@
         return { x: W + 40, y: Math.random() * H };
     }
 
+    /* ---- Build per-particle data (all in screen-space) ---- */
     const particles = [];
     for (let i = 0; i < N; i++) {
-        const frac = i / N;
-        const gp   = spiralPos(frac);
-        const tp   = TP[i];
-        const s    = randEdge();
-
-        // dist from core → brightness for galaxy
-        const dr = Math.sqrt((gp.x - cx) ** 2 + ((gp.y - cy) / 0.37) ** 2);
-        const br = Math.max(0.15, Math.pow(Math.max(0, 1 - dr / (Math.min(W * 0.40, H * 0.68))), 0.45));
-
-        // y-position within text block → shade (top bright, bottom slightly dimmer)
+        const gp  = spiralPos(i / N);
+        const tp  = TP[i];
+        const s   = randEdge();
+        const dr  = Math.hypot(gp.x - cx, (gp.y - cy) / 0.37);
+        const br  = Math.max(0.15, Math.pow(Math.max(0, 1 - dr / Math.min(W*0.40, H*0.68)), 0.45));
         const relY = Math.max(0, Math.min(1, (tp.y - TEXT_TOP) / (TEXT_BOT - TEXT_TOP)));
-        const tCharIdx = Math.min(T_CHARS.length - 1, Math.floor(relY * T_CHARS.length));
-
-        // explosion scatter — follow galaxy arm direction so blast looks directional
         const exAngle = gp.angle + (Math.random() - 0.5) * 1.5;
         const exDist  = 0.4 * Math.max(W, H) + Math.random() * 0.9 * Math.max(W, H);
-
-        // stable per-particle blast color: warm white (bright core) → deep amber (dim edge)
-        const blastHue = Math.round(50  - (1 - br) * 32);   // 50° (warm white) → 18° (amber)
-        const blastLum = Math.round(97  - (1 - br) * 62);   // 97% → 35%
-
         particles.push({
-            /* current */  x: s.x,   y: s.y,
-            /* galaxy  */  gx: gp.x, gy: gp.y,
-            /* text    */  tx: tp.x, ty: tp.y,
-            /* explode */  ex: cx + Math.cos(exAngle) * exDist,
-                           ey: cy + Math.sin(exAngle) * exDist,
-            /* galaxy orbit */ gAngle: gp.angle, gR: gp.r,
-            br,
-            relY,
-            blastHue, blastLum,
-            gChar:  G_CHARS[Math.floor(Math.random() * G_CHARS.length)],
-            tChar:  T_CHARS[tCharIdx],
-            size:   10 + Math.random() * 4,
-            jitter: Math.random(),          // phase stagger
+            x: s.x, y: s.y,
+            gx: gp.x, gy: gp.y,
+            tx: tp.x, ty: tp.y,
+            ex: cx + Math.cos(exAngle) * exDist,
+            ey: cy + Math.sin(exAngle) * exDist,
+            gAngle: gp.angle, gR: gp.r,
+            br, relY,
+            blastHue: Math.round(50 - (1-br)*32),
+            blastLum: Math.round(97 - (1-br)*62),
+            jitter: Math.random(),
+            lgX: 0, lgY: 0,
         });
     }
 
-    /* -------- background stars -------- */
-    const BG = Array.from({ length: 220 }, () => ({
-        x: Math.random(), y: Math.random(),
-        r: 0.3 + Math.random() * 1.1,
-        a: 0.08 + Math.random() * 0.38,
-        tw: 2 + Math.random() * 4   // twinkle period seconds
-    }));
-
-    function drawBG(alpha, now) {
-        BG.forEach(s => {
-            const twinkle = 0.7 + 0.3 * Math.sin(now / (s.tw * 1000));
-            ctx.beginPath();
-            ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(200,220,255,${s.a * alpha * twinkle})`;
-            ctx.fill();
-        });
+    /* ---- Galaxy colour helper (used in FORM + SPIN) ---- */
+    function galaxyColor(gR, br) {
+        const maxR    = MW_MAX_R;
+        const bulgeR  = maxR * 0.18;
+        const midR    = maxR * 0.55;
+        if (gR < bulgeR) {
+            const coreT = 1 - gR / bulgeR;
+            return hsl(lerp(55, 40, coreT), 60, lerp(88, 70, coreT));
+        } else if (gR < midR) {
+            const armT = (gR - bulgeR) / (midR - bulgeR);
+            return hsl(lerp(210, 195, armT), 90, lerp(72, 85, armT));
+        } else {
+            const outerT = Math.min(1, (gR - midR) / (maxR - midR));
+            return hsl(lerp(230, 255, outerT), 85, lerp(68, 58, outerT));
+        }
     }
 
-    /* -------- core glow -------- */
-    function drawCoreGlow(alpha) {
-        const R = CELL * 10;
-        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
-        g.addColorStop(0,   `rgba(160,190,255,${0.22 * alpha})`);
-        g.addColorStop(0.5, `rgba(100,130,255,${0.07 * alpha})`);
-        g.addColorStop(1,   'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+    /* ---- Boost ~40 arm particles into bright star-cluster knots ---- */
+    const armParticles = particles.filter(pt => pt.gR > MW_MAX_R * 0.18);
+    for (let k = 0; k < 40 && armParticles.length; k++) {
+        const idx = Math.floor(Math.random() * armParticles.length);
+        armParticles[idx].br = Math.min(1.0, armParticles[idx].br + 0.35);
+        armParticles.splice(idx, 1);
     }
 
-    /* -------- glow blur overlay (for HOLD phase) -------- */
-    function drawTextGlow(alpha, pulse) {
-        ctx.save();
-        ctx.globalAlpha = 0.10 * alpha * pulse;
-        ctx.filter      = 'blur(18px)';
-        ctx.font        = `bold ${CHAR_H}px "JetBrains Mono",monospace`;
-        ctx.textAlign   = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillStyle   = '#99bbff';
-        ctx.fillText('ARMINDER', cx, LINE1_Y + CHAR_H * 0.5);
-        ctx.fillStyle   = '#cc99ff';
-        ctx.fillText('SINGH',    cx, LINE2_Y + CHAR_H * 0.5);
-        ctx.restore();
+    /* ---- GPU buffers for main particles ---- */
+    const posArr  = new Float32Array(N * 3);
+    const colArr  = new Float32Array(N * 3);
+    const szArr   = new Float32Array(N);
+    const geo     = new THREE.BufferGeometry();
+    const posAttr = new THREE.BufferAttribute(posArr, 3); posAttr.setUsage(THREE.DynamicDrawUsage);
+    const colAttr = new THREE.BufferAttribute(colArr, 3); colAttr.setUsage(THREE.DynamicDrawUsage);
+    const szAttr  = new THREE.BufferAttribute(szArr,  1); szAttr.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('position', posAttr);
+    geo.setAttribute('aColor',   colAttr);
+    geo.setAttribute('aSize',    szAttr);
+
+    /* Vertex shader: soft glowing disc per point, additive blending */
+    const mat = new THREE.ShaderMaterial({
+        vertexShader: `
+            attribute vec3  aColor;
+            attribute float aSize;
+            varying   vec3  vColor;
+            void main() {
+                vColor = aColor;
+                gl_Position  = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = aSize;
+            }`,
+        fragmentShader: `
+            varying vec3 vColor;
+            void main() {
+                vec2  uv   = gl_PointCoord - 0.5;
+                float r    = length(uv);
+                if (r > 0.5) discard;
+                float star  = exp(-r * 12.0);
+                float halo  = exp(-r * 4.5) * 0.35;
+                float alpha = clamp(star + halo, 0.0, 1.0);
+                vec3  col   = vColor * (1.0 + star * 1.2);
+                gl_FragColor = vec4(col, alpha);
+            }`,
+        transparent: true,
+        depthWrite:  false,
+        blending:    THREE.AdditiveBlending,
+    });
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+
+    /* ---- Background star field ---- */
+    const BG_N    = 220;
+    const bgPos   = new Float32Array(BG_N * 3);
+    const bgCol   = new Float32Array(BG_N * 3);
+    const bgSz    = new Float32Array(BG_N);
+    const bgTw    = new Float32Array(BG_N);
+    const bgBase  = new Float32Array(BG_N);
+    for (let i = 0; i < BG_N; i++) {
+        bgPos[i*3]   = (Math.random()-0.5)*W;
+        bgPos[i*3+1] = (Math.random()-0.5)*H;
+        bgPos[i*3+2] = -200;
+        bgSz[i]  = 1.0 + Math.random() * 2.2;
+        bgTw[i]  = 2 + Math.random() * 4;
+        bgBase[i]= 0.06 + Math.random() * 0.28;
+    }
+    const bgGeo     = new THREE.BufferGeometry();
+    const bgColAttr = new THREE.BufferAttribute(bgCol, 3); bgColAttr.setUsage(THREE.DynamicDrawUsage);
+    bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+    bgGeo.setAttribute('aColor',   bgColAttr);
+    bgGeo.setAttribute('aSize',    new THREE.BufferAttribute(bgSz, 1));
+    const bgMat = new THREE.ShaderMaterial({
+        uniforms: { uFade: { value: 1.0 } },
+        vertexShader: `
+            attribute vec3  aColor;
+            attribute float aSize;
+            uniform   float uFade;
+            varying   vec3  vColor;
+            varying   float vFade;
+            void main() {
+                vColor = aColor; vFade = uFade;
+                gl_Position  = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = aSize;
+            }`,
+        fragmentShader: `
+            varying vec3 vColor; varying float vFade;
+            void main() {
+                float r = length(gl_PointCoord - 0.5);
+                if (r > 0.5) discard;
+                float a = (1.0 - smoothstep(0.0, 0.5, r)) * vFade;
+                gl_FragColor = vec4(vColor, a);
+            }`,
+        transparent: true,
+        depthWrite:  false,
+        blending:    THREE.AdditiveBlending,
+    });
+    scene.add(new THREE.Points(bgGeo, bgMat));
+
+    /* ---- HSL → linear RGB helper ---- */
+    function hsl(h, s, l) {
+        h /= 360; s /= 100; l /= 100;
+        const q = l < 0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
+        const hf = (t) => {
+            if (t < 0) t += 1; if (t > 1) t -= 1;
+            if (t < 1/6) return p+(q-p)*6*t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p+(q-p)*(2/3-t)*6;
+            return p;
+        };
+        return s === 0 ? [l,l,l] : [hf(h+1/3), hf(h), hf(h-1/3)];
     }
 
-    /* -------- phase machine -------- */
+    /* ---- Phase machine ---- */
     const PHASES    = ['FORM','SPIN','EXPLODE','CONVERGE','HOLD','LOGO','FADE'];
-    const DURATIONS = { FORM: 2100, SPIN: 1500, EXPLODE: 520, CONVERGE: 2400, HOLD: 1000, LOGO: 1300, FADE: 500 };
-    let phaseIdx  = 0;
-    let phaseStart = performance.now();
-    let spinDelta  = 0;
-    let raf;
-    let logoX = 0, logoY = 0;  // filled when LOGO phase begins
+    const DURATIONS = { FORM:2100, SPIN:1500, EXPLODE:520, CONVERGE:2400, HOLD:1000, LOGO:1300, FADE:500 };
+    let phaseIdx = 0, phaseStart = performance.now(), spinDelta = 0, raf;
+    let logoX = 0, logoY = 0;
 
-    const easeOut   = t => 1 - Math.pow(1 - t, 3);
+    const easeOut   = t => 1 - Math.pow(1-t, 3);
     const easeInOut = t => t < 0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
-    const lerp      = (a, b, t) => a + (b - a) * t;
+    const lerp      = (a,b,t) => a + (b-a)*t;
     const ph        = () => PHASES[phaseIdx];
-    const phT       = () => Math.min(1, (performance.now() - phaseStart) / DURATIONS[ph()]);
+    const phT       = () => Math.min(1, (performance.now()-phaseStart) / DURATIONS[ph()]);
 
     function frame(now) {
         raf = requestAnimationFrame(frame);
-        const t = phT();
-        const p = ph();
+        const t = phT(), p = ph();
 
         if (t >= 1 && phaseIdx < PHASES.length - 1) {
             phaseIdx++;
             phaseStart = performance.now();
-            // on LOGO phase start: query logo DOM position & latch all particle positions
+            if (ph() === 'EXPLODE') {
+                // Snapshot positions eagerly so expX/expY are always fresh at phase entry
+                particles.forEach(pt => { pt.expX = pt.x; pt.expY = pt.y; });
+            }
             if (ph() === 'LOGO') {
                 const el = document.querySelector('.logo');
-                if (el) { const r = el.getBoundingClientRect(); logoX = r.left + r.width / 2; logoY = r.top + r.height / 2; }
+                if (el) { const r = el.getBoundingClientRect(); logoX = r.left+r.width/2; logoY = r.top+r.height/2; }
                 else { logoX = 58; logoY = 38; }
                 particles.forEach(pt => { pt.lgX = pt.x; pt.lgY = pt.y; });
             }
         }
 
-        // canvas clear
-        ctx.fillStyle = 'rgba(2,3,12,1)';
-        ctx.fillRect(0, 0, W, H);
-        drawBG(p === 'FADE' ? (1 - t) * 0.75 : 0.75, now);
+        // Time-based spin: 0.192 rad/s keeps the same feel at any frame rate
+        if (p === 'SPIN') spinDelta = (now - phaseStart) * 0.000192;
+        if (p === 'FADE') overlay.style.opacity = String(Math.max(0, 1-easeInOut(t)));
 
-        if (p === 'SPIN') spinDelta += 0.0032;
+        /* -- twinkle background stars -- */
+        const bgFade = p === 'FADE' ? Math.max(0, 1-easeInOut(t)) : 1.0;
+        bgMat.uniforms.uFade.value = bgFade;
+        for (let i = 0; i < BG_N; i++) {
+            const tw = bgBase[i] * (0.7 + 0.3*Math.sin(now/(bgTw[i]*1000))) * bgFade;
+            bgCol[i*3] = 0.78*tw; bgCol[i*3+1] = 0.86*tw; bgCol[i*3+2] = tw;
+        }
+        bgColAttr.needsUpdate = true;
 
-        // FADE: animate overlay CSS opacity for a full crossfade with the site
-        if (p === 'FADE') overlay.style.opacity = String(Math.max(0, 1 - easeInOut(t)));
-
-        // EXPLODE overlays
-        if (p === 'EXPLODE') {
-            const flash = Math.max(0, 1 - t * 5);
-            if (flash > 0) { ctx.fillStyle = `rgba(255,230,170,${flash * 0.5})`; ctx.fillRect(0, 0, W, H); }
-            const maxR  = Math.max(W, H) * 0.9;
-            const ringR = lerp(CELL * 3, maxR, easeOut(t));
-            const ringW = maxR * 0.10;
-            const ringA = Math.max(0, 1 - t * 2.2) * 0.75;
-            if (ringA > 0) {
-                const rg = ctx.createRadialGradient(cx, cy, Math.max(0, ringR - ringW), cx, cy, ringR);
-                rg.addColorStop(0, 'rgba(0,0,0,0)');
-                rg.addColorStop(0.5, `rgba(255,210,110,${ringA})`);
-                rg.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
-            }
+        /* -- bloom strength changes per phase -- */
+        if (bloomPass) {
+            if      (p === 'EXPLODE') bloomPass.strength = 2.8;
+            else if (p === 'HOLD')    bloomPass.strength = 1.2 + 0.9*(0.5+0.5*Math.sin(now/480));
+            else if (p === 'FORM' || p === 'SPIN') bloomPass.strength = 1.6;
+            else                      bloomPass.strength = 1.3;
         }
 
-        // LOGO phase: accent glow blooms at logo position as particles arrive
-        if (p === 'LOGO') {
-            const glowR = lerp(0, CELL * 8, easeOut(t));
-            const gA    = easeOut(t) * 0.6;
-            if (glowR > 0) {
-                const gg = ctx.createRadialGradient(logoX, logoY, 0, logoX, logoY, glowR);
-                gg.addColorStop(0,   `rgba(233,69,96,${gA})`);
-                gg.addColorStop(0.5, `rgba(233,69,96,${gA * 0.25})`);
-                gg.addColorStop(1,   'rgba(0,0,0,0)');
-                ctx.fillStyle = gg;
-                ctx.fillRect(logoX - glowR, logoY - glowR, glowR * 2, glowR * 2);
-            }
-        }
-
-        // set font for explosion sparkle chars
-        ctx.font = `${PSIZE}px "JetBrains Mono",monospace`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-
-        particles.forEach(p_ => {
-            let x, y, color;
-            let useRect = false, rectScale = 1;
+        /* -- update particle positions & colours -- */
+        for (let i = 0; i < N; i++) {
+            const pt = particles[i];
+            let x, y, cr, cg, cb, sz;
 
             if (p === 'FORM') {
-                const lt  = Math.max(0, Math.min(1, (t - p_.jitter * 0.35) / (1 - p_.jitter * 0.35)));
-                const e   = easeOut(lt);
-                x = lerp(p_.x, p_.gx, e); y = lerp(p_.y, p_.gy, e);
-                p_.x = x; p_.y = y;
-                const bri = p_.br * e;
-                color = `hsla(${195 + p_.br * 65},90%,${38 + bri * 55}%,${bri})`;
+                const lt = Math.max(0, Math.min(1, (t - pt.jitter*0.35)/(1-pt.jitter*0.35)));
+                const e  = easeOut(lt);
+                x = lerp(pt.x, pt.gx, e);  y = lerp(pt.y, pt.gy, e);
+                pt.x = x; pt.y = y;
+                const bri = pt.br * e;
+                const [r,g,b] = galaxyColor(pt.gR, pt.br);
+                cr = r*bri*1.6; cg = g*bri*1.6; cb = b*bri*1.6;
+                sz = pt.gR < MW_MAX_R * 0.18
+                    ? Math.max(2.0, pt.br * 6.5)
+                    : Math.max(1.2, pt.br * 4.5);
 
             } else if (p === 'SPIN') {
-                const innerSpeed = 1 + p_.gR / (Math.min(W, H) * 0.18);
-                const a = p_.gAngle + spinDelta * innerSpeed;
-                x = cx + Math.cos(a) * p_.gR;
-                y = cy + Math.sin(a) * p_.gR * 0.37;
-                p_.x = x; p_.y = y;
-                color = `hsla(${185 + p_.br * 75},92%,${42 + p_.br * 53}%,${p_.br})`;
+                const spd = 1 + pt.gR/(Math.min(W,H)*0.18);
+                const a   = pt.gAngle + spinDelta*spd;
+                x = cx + Math.cos(a)*pt.gR;
+                y = cy + Math.sin(a)*pt.gR*0.35;
+                pt.x = x; pt.y = y;
+                const [r,g,b] = galaxyColor(pt.gR, pt.br);
+                cr = r*pt.br*1.7; cg = g*pt.br*1.7; cb = b*pt.br*1.7;
+                sz = pt.gR < MW_MAX_R * 0.18
+                    ? Math.max(2.0, pt.br * 6.5)
+                    : Math.max(1.2, pt.br * 4.5);
 
             } else if (p === 'EXPLODE') {
-                if (p_.expX === undefined) { p_.expX = p_.x; p_.expY = p_.y; }
                 const e = Math.pow(t, 0.28);
-                x = lerp(p_.expX, p_.ex, e); y = lerp(p_.expY, p_.ey, e);
-                p_.x = x; p_.y = y;
-                color = `hsla(${p_.blastHue},100%,${p_.blastLum}%,${Math.max(0, 1 - t * 0.9)})`;
+                x = lerp(pt.expX, pt.ex, e); y = lerp(pt.expY, pt.ey, e);
+                pt.x = x; pt.y = y;
+                const fade = Math.max(0, 1-t*0.85);
+                const [r,g,b] = hsl(pt.blastHue, 100, pt.blastLum);
+                cr = r*fade*2.2; cg = g*fade*2.2; cb = b*fade*2.2;
+                sz = Math.max(2, 8*(1-t*0.6));
 
             } else if (p === 'CONVERGE') {
-                const delay = p_.jitter * 0.28;
-                const lt    = Math.max(0, (t - delay) / (1 - delay));
+                const delay = pt.jitter*0.28;
+                const lt    = Math.max(0, (t-delay)/(1-delay));
                 const e     = easeInOut(Math.min(lt, 1));
-                x = lerp(p_.x, p_.tx, 0.025 + e * 0.08);
-                y = lerp(p_.y, p_.ty, 0.025 + e * 0.08);
-                p_.x = x; p_.y = y;
-                color = `hsla(${lerp(210,265,p_.relY)},85%,${lerp(97,74,p_.relY)}%,${0.15 + easeOut(e) * 0.85})`;
-                useRect = true;
+                x = lerp(pt.x, pt.tx, 0.025+e*0.08);
+                y = lerp(pt.y, pt.ty, 0.025+e*0.08);
+                pt.x = x; pt.y = y;
+                const alpha = 0.15 + easeOut(e)*0.85;
+                const [r,g,b] = hsl(lerp(210,265,pt.relY), 85, lerp(97,74,pt.relY));
+                cr = r*alpha*1.4; cg = g*alpha*1.4; cb = b*alpha*1.4;
+                sz = Math.max(1.5, PSUB * 0.95);
 
             } else if (p === 'HOLD') {
-                x = lerp(p_.x, p_.tx, 0.18); y = lerp(p_.y, p_.ty, 0.18);
-                p_.x = x; p_.y = y;
-                const pulse = 0.78 + 0.22 * Math.sin(now / 380 + p_.jitter * Math.PI * 4);
-                color = `hsla(${lerp(205,260,p_.relY)},88%,${lerp(98,76,p_.relY)}%,${pulse})`;
-                useRect = true;
+                x = lerp(pt.x, pt.tx, 0.18); y = lerp(pt.y, pt.ty, 0.18);
+                pt.x = x; pt.y = y;
+                const pulse = 0.78 + 0.22*Math.sin(now/380 + pt.jitter*Math.PI*4);
+                const [r,g,b] = hsl(lerp(205,260,pt.relY), 88, lerp(98,76,pt.relY));
+                cr = r*pulse*1.5; cg = g*pulse*1.5; cb = b*pulse*1.5;
+                sz = Math.max(1.5, PSUB * 0.95);
 
             } else if (p === 'LOGO') {
-                // fly from text position to logo, shrink, shift blue→accent red
                 const e = easeInOut(t);
-                x = lerp(p_.lgX, logoX, e); y = lerp(p_.lgY, logoY, e);
-                p_.x = x; p_.y = y;
-                color = `hsla(${lerp(215,355,e)},90%,${lerp(90,62,e)}%,${0.8 + e * 0.2})`;
-                rectScale = Math.max(0.1, 1 - e * 0.9);
-                useRect = true;
+                x = lerp(pt.lgX, logoX, e); y = lerp(pt.lgY, logoY, e);
+                pt.x = x; pt.y = y;
+                const [r,g,b] = hsl(lerp(215,355,e), 90, lerp(90,62,e));
+                const a = 0.8 + e*0.2;
+                cr = r*a*1.4; cg = g*a*1.4; cb = b*a*1.4;
+                sz = Math.max(0.5, PSUB*(1-e*0.9));
 
             } else { // FADE
-                x = p_.x; y = p_.y;
-                color = `rgba(233,69,96,${Math.max(0, 1 - t * 2) * p_.br})`;
-                useRect = true;
-                if (t >= 1) { cancelAnimationFrame(raf); overlay.remove(); return; }
+                x = pt.x; y = pt.y;
+                const fade = Math.max(0, 1-t*2)*pt.br;
+                cr = 0.92*fade; cg = 0.27*fade; cb = 0.38*fade;
+                sz = Math.max(0.5, PSUB*0.9);
+                if (t >= 1) { cancelAnimationFrame(raf); overlay.remove(); window.__preloaderDone = true; return; }
             }
 
-            // render
-            if (useRect) {
-                const rs = Math.max(1, Math.round(PSUB * rectScale));
-                const rx = Math.round(x - rs * 0.5), ry = Math.round(y - rs * 0.5);
-                if (p === 'CONVERGE' || p === 'HOLD') {
-                    ctx.fillStyle = 'rgba(0,0,25,0.45)';
-                    ctx.fillRect(rx + 1, ry + 1, rs, rs);
-                }
-                ctx.fillStyle = color;
-                ctx.fillRect(rx, ry, rs, rs);
-            } else if (p === 'EXPLODE') {
-                ctx.fillStyle = color;
-                ctx.fillText(Math.random() > 0.5 ? p_.gChar : p_.tChar, x, y);
-            } else {
-                // FORM / SPIN: glowing star dot — no text chars, clean circles
-                const r = Math.max(0.5, p_.br * 2.6);
-                ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.fillStyle = color; ctx.fill();
-            }
-        });
+            posArr[i*3]   = sw(x);  posArr[i*3+1] = sh(y);  posArr[i*3+2] = 0;
+            colArr[i*3]   = cr;     colArr[i*3+1] = cg;     colArr[i*3+2] = cb;
+            szArr[i]      = sz;
+        }
 
-        if (p === 'HOLD') { const pulse = 0.5 + 0.5 * Math.sin(now / 500); drawTextGlow(1, pulse); }
-        if (p === 'SPIN' || p === 'FORM') drawCoreGlow(p === 'FORM' ? t : 1);
+        posAttr.needsUpdate = true;
+        colAttr.needsUpdate = true;
+        szAttr.needsUpdate  = true;
+
+        if (useComposer) composer.render(); else renderer.render(scene, camera);
     }
 
     raf = requestAnimationFrame(frame);
 
-    // Skip
     function skip() {
         cancelAnimationFrame(raf);
         overlay.style.transition = 'opacity 0.5s';
         overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 520);
+        setTimeout(() => { overlay.remove(); window.__preloaderDone = true; }, 520);
     }
-    document.addEventListener('keydown',   skip, { once: true });
-    document.addEventListener('touchstart',skip, { once: true });
-    overlay.addEventListener('click',      skip, { once: true });
+    document.addEventListener('keydown',    skip, { once: true });
+    document.addEventListener('touchstart', skip, { once: true });
+    overlay.addEventListener('click',       skip, { once: true });
 }());
 </script>
 
@@ -1224,49 +1328,114 @@
         ctx.clearRect(0, 0, w, h);
 
         const pegSpacing = w / 4;
-        const pegX = [pegSpacing, pegSpacing * 2, pegSpacing * 3];
-        const baseY = h - 28;
-        const pegH  = h - 60;
-        const discH = Math.min(22, (pegH - 20) / (hanoiDiscCount + 1));
-        const maxW  = pegSpacing * 0.85, minW = maxW * 0.22;
+        const pegX  = [pegSpacing, pegSpacing * 2, pegSpacing * 3];
+        const baseY = h - 34;
+        const pegH  = h - 70;
+        const discH = Math.min(28, (pegH - 20) / (hanoiDiscCount + 1));
+        const maxW  = pegSpacing * 0.86, minW = maxW * 0.20;
+        const pegW  = 9;
 
-        ctx.fillStyle = 'rgba(74,123,255,0.15)';
-        ctx.beginPath(); ctx.roundRect(20, baseY, w - 40, 10, 5); ctx.fill();
+        /* -- base platform -- */
+        const baseGrad = ctx.createLinearGradient(0, baseY, 0, baseY + 18);
+        baseGrad.addColorStop(0,   'rgba(74,123,255,0.30)');
+        baseGrad.addColorStop(0.5, 'rgba(50, 90,200,0.18)');
+        baseGrad.addColorStop(1,   'rgba(20, 40,120,0.04)');
+        ctx.fillStyle = baseGrad;
+        ctx.beginPath(); ctx.roundRect(14, baseY, w - 28, 18, 9); ctx.fill();
+        // top-edge highlight
+        ctx.strokeStyle = 'rgba(120,160,255,0.50)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(18, baseY + 1.5); ctx.lineTo(w - 18, baseY + 1.5); ctx.stroke();
 
+        /* -- peg labels -- */
         ['A','B','C'].forEach((lbl, i) => {
-            ctx.fillStyle = 'rgba(160,160,176,0.55)';
-            ctx.font = `bold 13px 'JetBrains Mono', monospace`;
+            ctx.fillStyle = 'rgba(110,135,210,0.55)';
+            ctx.font = `bold 11px 'JetBrains Mono', monospace`;
             ctx.textAlign = 'center';
-            ctx.fillText(lbl, pegX[i], h - 6);
+            ctx.fillText(lbl, pegX[i], h - 12);
         });
 
-        pegX.forEach(x => {
-            const g = ctx.createLinearGradient(x - 3, baseY - pegH, x + 3, baseY);
-            g.addColorStop(0, 'rgba(100,120,200,0.45)');
-            g.addColorStop(1, 'rgba(74,123,255,0.75)');
-            ctx.fillStyle = g;
-            ctx.beginPath(); ctx.roundRect(x - 3, baseY - pegH, 6, pegH, 3); ctx.fill();
+        /* -- pegs (chrome / steel look) -- */
+        pegX.forEach(px => {
+            // soft drop shadow
+            ctx.save();
+            ctx.filter = 'blur(4px)';
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.beginPath(); ctx.roundRect(px - pegW/2 + 3, baseY - pegH, pegW, pegH, 4); ctx.fill();
+            ctx.restore();
+
+            // chrome gradient left→right
+            const pg = ctx.createLinearGradient(px - pegW/2, 0, px + pegW/2, 0);
+            pg.addColorStop(0,    'rgba(45, 60,150,0.92)');
+            pg.addColorStop(0.25, 'rgba(120,150,255,0.98)');
+            pg.addColorStop(0.50, 'rgba(210,220,255,1.00)');
+            pg.addColorStop(0.75, 'rgba(100,130,230,0.96)');
+            pg.addColorStop(1,    'rgba(35, 50,140,0.88)');
+            ctx.fillStyle = pg;
+            ctx.beginPath(); ctx.roundRect(px - pegW/2, baseY - pegH, pegW, pegH, 4); ctx.fill();
+
+            // specular streak
+            ctx.fillStyle = 'rgba(255,255,255,0.22)';
+            ctx.beginPath(); ctx.roundRect(px - pegW/2 + 1.5, baseY - pegH + 16, 2.5, pegH * 0.55, 2); ctx.fill();
         });
 
-        const COLORS = ['#e94560','#ff6b6b','#ffa94d','#ffd43b','#69db7c','#4dabf7','#9775fa','#f783ac'];
+        /* -- discs -- */
+        const DISC_COLORS = [
+            ['#e94560','#9b1f35'],
+            ['#ff7b3a','#b84a10'],
+            ['#ffca3a','#b88a10'],
+            ['#06d6a0','#048c67'],
+            ['#4a90e2','#2158a0'],
+            ['#9b59b6','#632d7a'],
+            ['#e84393','#9e1557'],
+            ['#f4845f','#b04830'],
+        ];
+
         hanoiPegs.forEach((peg, pi) => {
             peg.forEach((disc, di) => {
                 const dw = minW + (disc - 1) / Math.max(1, hanoiDiscCount - 1) * (maxW - minW);
                 const dx = pegX[pi] - dw / 2;
                 const dy = baseY - (di + 1) * discH - di * 2;
-                const col = COLORS[(disc - 1) % COLORS.length];
-                const g = ctx.createLinearGradient(dx, dy, dx, dy + discH);
-                g.addColorStop(0, col); g.addColorStop(1, col + 'aa');
-                ctx.fillStyle = g;
-                ctx.beginPath(); ctx.roundRect(dx, dy, dw, discH - 2, discH / 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255,255,255,0.13)';
-                ctx.beginPath(); ctx.roundRect(dx + 2, dy + 2, dw - 4, discH / 2 - 3, discH / 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255,255,255,0.88)';
-                ctx.font = `bold ${Math.min(11, discH - 6)}px 'JetBrains Mono', monospace`;
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(disc, pegX[pi], dy + discH / 2 - 1);
+                const rr = Math.min(discH / 2, 12);
+                const [hiCol, loCol] = DISC_COLORS[(disc - 1) % DISC_COLORS.length];
+
+                // cast shadow
+                ctx.save();
+                ctx.filter = 'blur(5px)';
+                ctx.fillStyle = 'rgba(0,0,0,0.30)';
+                ctx.beginPath(); ctx.roundRect(dx + 5, dy + discH - 2, dw - 10, 7, 4); ctx.fill();
+                ctx.restore();
+
+                // body gradient (top-lit cylinder look)
+                const body = ctx.createLinearGradient(dx, dy, dx, dy + discH);
+                body.addColorStop(0,    hiCol + 'ff');
+                body.addColorStop(0.42, hiCol + 'ee');
+                body.addColorStop(0.72, loCol + 'ee');
+                body.addColorStop(1,    loCol + '88');
+                ctx.fillStyle = body;
+                ctx.beginPath(); ctx.roundRect(dx, dy, dw, discH - 2, rr); ctx.fill();
+
+                // side rim darkening
+                ctx.strokeStyle = loCol + 'aa';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.roundRect(dx, dy, dw, discH - 2, rr); ctx.stroke();
+
+                // top sheen
+                const sheen = ctx.createLinearGradient(dx, dy, dx, dy + discH * 0.5);
+                sheen.addColorStop(0, 'rgba(255,255,255,0.38)');
+                sheen.addColorStop(1, 'rgba(255,255,255,0.00)');
+                ctx.fillStyle = sheen;
+                ctx.beginPath(); ctx.roundRect(dx + 3, dy + 2, dw - 6, discH * 0.46, rr); ctx.fill();
+
+                // disc number
+                ctx.fillStyle = 'rgba(255,255,255,0.92)';
+                ctx.font = `bold ${Math.min(13, discH - 7)}px 'JetBrains Mono', monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(disc, pegX[pi], dy + (discH - 2) / 2);
             });
         });
+        ctx.textBaseline = 'alphabetic';
     }
 
     /* ============================================================
@@ -1278,18 +1447,28 @@
     let rubiksAnimating = false;
     let scrambleMovesDone = [];
 
-    const FACE_COLORS = { right: 0xE94560, left: 0xFF8C00, top: 0xF0F0F0, bottom: 0xFFD700, front: 0x2ECC71, back: 0x4A7BFF };
-    const INNER_COLOR = 0x111118;
+    // WCA-accurate sticker colours, slightly saturated for screen
+    const FACE_COLORS = { right: 0xC8102E, left: 0xFF5900, top: 0xFFFFFF, bottom: 0xFFD600, front: 0x009B48, back: 0x0046AD };
+    const INNER_COLOR = 0x0a0a0f;
+
+    function makeFaceMat(col, isSticker) {
+        return new THREE.MeshStandardMaterial({
+            color:     col,
+            roughness: isSticker ? 0.18 : 0.88,
+            metalness: isSticker ? 0.06 : 0.00,
+        });
+    }
 
     function makeCubie(x, y, z) {
-        const geo = new THREE.BoxGeometry(0.93, 0.93, 0.93);
+        // 0.88 size keeps the classic visible gap between cubies
+        const geo = new THREE.BoxGeometry(0.88, 0.88, 0.88);
         const mats = [
-            new THREE.MeshLambertMaterial({ color: x === 1  ? FACE_COLORS.right  : INNER_COLOR }),
-            new THREE.MeshLambertMaterial({ color: x === -1 ? FACE_COLORS.left   : INNER_COLOR }),
-            new THREE.MeshLambertMaterial({ color: y === 1  ? FACE_COLORS.top    : INNER_COLOR }),
-            new THREE.MeshLambertMaterial({ color: y === -1 ? FACE_COLORS.bottom : INNER_COLOR }),
-            new THREE.MeshLambertMaterial({ color: z === 1  ? FACE_COLORS.front  : INNER_COLOR }),
-            new THREE.MeshLambertMaterial({ color: z === -1 ? FACE_COLORS.back   : INNER_COLOR }),
+            makeFaceMat(x === 1  ? FACE_COLORS.right  : INNER_COLOR, x === 1),
+            makeFaceMat(x === -1 ? FACE_COLORS.left   : INNER_COLOR, x === -1),
+            makeFaceMat(y === 1  ? FACE_COLORS.top    : INNER_COLOR, y === 1),
+            makeFaceMat(y === -1 ? FACE_COLORS.bottom : INNER_COLOR, y === -1),
+            makeFaceMat(z === 1  ? FACE_COLORS.front  : INNER_COLOR, z === 1),
+            makeFaceMat(z === -1 ? FACE_COLORS.back   : INNER_COLOR, z === -1),
         ];
         const mesh = new THREE.Mesh(geo, mats);
         mesh.position.set(x, y, z);
@@ -1311,9 +1490,14 @@
         rubiksRenderer.setClearColor(0x000000, 0);
         container.appendChild(rubiksRenderer.domElement);
 
-        rubiksScene.add(new THREE.AmbientLight(0xffffff, 0.7));
-        const dl = new THREE.DirectionalLight(0xffffff, 0.9); dl.position.set(5, 8, 6); rubiksScene.add(dl);
-        const dl2 = new THREE.DirectionalLight(0xffffff, 0.3); dl2.position.set(-5, -3, -4); rubiksScene.add(dl2);
+        // Cool ambient so the dark plastic reads as truly dark
+        rubiksScene.add(new THREE.AmbientLight(0x8899cc, 0.55));
+        // Key light — warm white from upper-right
+        const dl  = new THREE.DirectionalLight(0xfff5e8, 1.10); dl.position.set(6, 9, 7);  rubiksScene.add(dl);
+        // Fill light — cool blue-grey from lower-left, stops pure shadows going black
+        const dl2 = new THREE.DirectionalLight(0xaabbdd, 0.30); dl2.position.set(-5, -4, -4); rubiksScene.add(dl2);
+        // Rim light — punches specular highlights on sticker surfaces
+        const pl  = new THREE.PointLight(0xffffff, 0.55, 22); pl.position.set(-3, 5, 3);  rubiksScene.add(pl);
 
         rubiksControls = new THREE.OrbitControls(rubiksCamera, rubiksRenderer.domElement);
         rubiksControls.enableDamping = true; rubiksControls.dampingFactor = 0.06;
